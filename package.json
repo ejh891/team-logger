@@ -5,6 +5,7 @@
   "dependencies": {
     "@types/react-bootstrap": "^0.31.6",
     "@types/react-redux": "^5.0.12",
+    "firebase": "^4.6.1",
     "react": "^16.0.0",
     "react-bootstrap": "^0.31.5",
     "react-dom": "^16.0.0",
