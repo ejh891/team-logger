@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Grid, Row, Col, Button } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
 
 import { State } from '../../redux/models/state';
 import { NullableUser } from '../../redux/models/user';
@@ -19,26 +20,18 @@ class App extends React.Component<AppProps> {
   }
 
   render() {
-    const { user, userAuthStateChanging } = this.props;
+    const { user } = this.props;
+
+    if (user === null) {
+      return (<Redirect to={{pathname: '/sign-in'}}/>);
+    }
 
     return (
       <Grid>
         <Header />
         <Row>
           <Col xs={12}>
-            {userAuthStateChanging === true &&
-                <div>Contacting Facebook...</div>
-            }
-            {user !== null &&
-              <div>
-                <div>Id: {user.id}</div>
-                <div>Name: {user.name}</div>
-                <img src={user.photoURL} />
-              </div>
-            }
-            {user === null &&
-              <div>Welcome! Please log in to continue</div>
-            }
+            <Button>Do a thing</Button>
           </Col>
         </Row>
       </Grid>
@@ -49,7 +42,6 @@ class App extends React.Component<AppProps> {
 const mapStateToProps = (state: State) => {
   return {
     user: state.user,
-    userAuthStateChanging: state.userAuthStateChanging,
   };
 };
 

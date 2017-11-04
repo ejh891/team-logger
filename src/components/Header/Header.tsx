@@ -1,16 +1,24 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 import { State } from '../../redux/models/state';
-import { observeAuthState, logInUser, logOutUser } from '../../redux/actions';
-import { NullableUser } from '../../redux/models/user';
+import { logOutUser } from '../../redux/actions';
+import { User } from '../../redux/models/user';
+
+const style = {
+  profileImage: {
+    display: 'inline-block',
+    marginRight: '5px',
+    width: '20px',
+    height: '20px',
+  },
+};
 
 interface HeaderProps {
-  user: NullableUser;
-  observeAuthState: () => void;
-  logInUser: () => void;
+  user: User;
   logOutUser: () => void;
 }
 
@@ -19,38 +27,31 @@ class Header extends React.Component<HeaderProps> {
     super(props);
 
   }
-
-  componentDidMount() {
-    // sets up listener to dispatch appropriate actions when auth state changes
-    this.props.observeAuthState();
-  }
   
   render() {
     const { user } = this.props;
     return (
       <Row>
-        <Col xs={12}>
-          {user === null &&
-            <Button
-              bsStyle="primary"
-              bsSize="large"
-              block={true}
-              onClick={this.props.logInUser}
-            >
-              Log In with Facebook
-            </Button>
-          }
-          {user !== null &&
-            <Button
-              bsStyle="primary"
-              bsSize="large"
-              block={true}
-              onClick={this.props.logOutUser}
-            >
-              Log Out
-            </Button>
-          }
-        </Col>
+        <Navbar>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Link to={`/users/${user.id}`}>
+                <img style={style.profileImage} src={user.photoURL} alt="Profile picture"/>
+                <span>{user.name}</span>
+              </Link>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav>
+              <NavItem eventKey={1} href="#">Link</NavItem>
+            </Nav>
+            <Nav pullRight={true}>
+              <NavItem eventKey={1} href="#">Link Right</NavItem>
+              <NavItem eventKey={2} href="#">Link Right</NavItem>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
       </Row>
     );
   }
@@ -64,9 +65,7 @@ const mapStateToProps = (state: State) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<State>) => {
     return {
-      logInUser: () => { dispatch(logInUser()); },
       logOutUser: () => { dispatch(logOutUser()); },
-      observeAuthState: () => { dispatch(observeAuthState()); },
     };
 };
 
