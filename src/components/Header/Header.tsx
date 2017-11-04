@@ -44,11 +44,7 @@ class Header extends React.Component<HeaderProps> {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavItem eventKey={1} href="#">Link</NavItem>
-            </Nav>
-            <Nav pullRight={true}>
-              <NavItem eventKey={1} href="#">Link Right</NavItem>
-              <NavItem eventKey={2} href="#">Link Right</NavItem>
+              <NavItem onClick={this.props.logOutUser}>Log out</NavItem>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
