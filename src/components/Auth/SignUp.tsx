@@ -2,17 +2,18 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Grid, Row, Col, FormGroup, FormControl, HelpBlock, Button } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
 
-import { createUserViaEmail } from '../../redux/actions';
+import { createUserViaEmail, clearCreateUserError } from '../../redux/actions/actionCreators';
 import { State } from '../../redux/models/state';
 import { NullableFirebaseError } from '../../redux/models/firebaseError';
 import { NullableUser } from '../../redux/models/user';
 
-interface SignUpProps {
+interface SignUpProps extends RouteComponentProps<{}> {
   user: NullableUser;
-  setUserError: NullableFirebaseError;
+  createUserError: NullableFirebaseError;
   createUserViaEmail: (email: string, password: string) => void;
+  clearCreateUserError: () => void;
 }
 
 interface SignUpState {
@@ -49,6 +50,10 @@ class SignUp extends React.Component<SignUpProps, SignUpState> {
   handleEmailChange(event: React.FormEvent<FormControl>) {
     const target = event.target as HTMLInputElement;
 
+    if (this.props.createUserError !== null) {
+      this.props.clearCreateUserError();
+    }
+
     this.setState({email: target.value});
   }
 
@@ -61,6 +66,10 @@ class SignUp extends React.Component<SignUpProps, SignUpState> {
       passwordError = 'Password must be at least 6 characters';
     }
 
+    if (this.props.createUserError !== null) {
+      this.props.clearCreateUserError();
+    }
+
     this.setState({ password, passwordError });
   }
 
@@ -71,6 +80,10 @@ class SignUp extends React.Component<SignUpProps, SignUpState> {
     let passwordAgainError = null;
     if (passwordAgain.length > 0 && passwordAgain !== this.state.password) {
       passwordAgainError = 'Passwords don\'t match';
+    }
+
+    if (this.props.createUserError !== null) {
+      this.props.clearCreateUserError();
     }
 
     this.setState({ passwordAgain, passwordAgainError });
@@ -186,8 +199,8 @@ class SignUp extends React.Component<SignUpProps, SignUpState> {
             >
               Create account
             </Button>
-            {this.props.setUserError !== null && 
-              <div>{this.props.setUserError.message}</div>
+            {this.props.createUserError !== null && 
+              <div>{this.props.createUserError.message}</div>
             }
           </Col>
         </Row>
@@ -199,7 +212,7 @@ class SignUp extends React.Component<SignUpProps, SignUpState> {
 const mapStateToProps = (state: State) => {
   return {
     user: state.user,
-    setUserError: state.setUserError,
+    createUserError: state.createUserError,
   };
 };
 
@@ -208,6 +221,7 @@ const mapDispatchToProps = (dispatch: Dispatch<State>) => {
       createUserViaEmail: (email: string, password: string) => { 
         dispatch(createUserViaEmail(email, password)); 
       },
+      clearCreateUserError: () => { dispatch(clearCreateUserError()); },
     };
 };
 

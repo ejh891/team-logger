@@ -2,10 +2,15 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Grid, Row, Col, Button, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, RouteComponentProps } from 'react-router-dom';
 
 import { State } from '../../redux/models/state';
-import { logInUserViaFacebook, logInUserViaEmail, sendPasswordResetEmail } from '../../redux/actions';
+import { 
+  logInUserViaFacebook,
+  logInUserViaEmail,
+  sendPasswordResetEmail,
+  clearSetUserError
+} from '../../redux/actions/actionCreators';
 import { NullableUser } from '../../redux/models/user';
 import { NullableFirebaseError } from '../../redux/models/firebaseError';
 import { authErrorCodes } from '../../enums/authErrorCodes';
@@ -26,12 +31,13 @@ const style = {
   }
 };
 
-interface SignInProps {
+interface SignInProps extends RouteComponentProps<{}> {
   user: NullableUser;
   setUserError: NullableFirebaseError;
   logInUserViaEmail: (email: string, password: string) => void;
   logInUserViaFacebook: () => void;
   sendPasswordResetEmail: (email: string) => void;
+  clearSetUserError: () => void;
 }
 
 interface SignInState {
@@ -67,10 +73,10 @@ class SignIn extends React.Component<SignInProps, SignInState> {
 
     switch (this.props.setUserError.code) {
       case authErrorCodes.USER_NOT_FOUND:
-        return (<div>Create an account?</div>);
+        return(<div>Do you need to <Link to="sign-up">Create an account</Link>?</div>);
       case authErrorCodes.BAD_PASSWORD:
         return (
-          <div onClick={() => {this.props.sendPasswordResetEmail(this.state.email); }}>Reset your password?</div>
+          <a onClick={() => {this.props.sendPasswordResetEmail(this.state.email); }}>Reset your password?</a>
         );
       default:
         return null;
@@ -79,14 +85,23 @@ class SignIn extends React.Component<SignInProps, SignInState> {
 
   handleEmailChange(event: React.FormEvent<FormControl>) {
     const target = event.target as HTMLInputElement;
-
-    this.setState({ email: target.value });
+    const email = target.value;
+    
+    if (this.props.setUserError !== null) {
+      this.props.clearSetUserError();
+    }
+    this.setState({ email });
   }
 
   handlePasswordChange(event: React.FormEvent<FormControl>) {
     const target = event.target as HTMLInputElement;
+    const password = target.value;
 
-    this.setState({ password: target.value });
+    if (this.props.setUserError !== null) {
+      this.props.clearSetUserError();
+    }
+
+    this.setState({ password });
   }
 
   render() {
@@ -184,6 +199,7 @@ const mapDispatchToProps = (dispatch: Dispatch<State>) => {
       sendPasswordResetEmail: (email: string) => {
         dispatch(sendPasswordResetEmail(email));
       },
+      clearSetUserError: () => { dispatch(clearSetUserError()); }
     };
 };
 

@@ -13,7 +13,7 @@ import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
 import User from './components/User/User';
 import MyProfile from './components/MyProfile/MyProfile';
-import { observeAuthState } from './redux/actions';
+import { observeAuthState } from './redux/actions/actionCreators';
 
 import './index.css';
 import 'react-toastify/dist/ReactToastify.min.css';

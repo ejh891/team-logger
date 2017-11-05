@@ -5,10 +5,11 @@ import { Row, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { State } from '../../redux/models/state';
-import { logOutUser } from '../../redux/actions';
+import { logOutUser } from '../../redux/actions/actionCreators';
 import { User } from '../../redux/models/user';
 
 const defaultAvatar = require('../../images/poop-emoji.png');
+const logo = require('../../images/logo.png');
 
 const style = {
   profileImage: {
@@ -42,15 +43,19 @@ class Header extends React.Component<HeaderProps> {
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to={`/my-profile`}>
-                <img style={style.profileImage} src={this.getAvatar()} alt="Profile picture"/>
-                <span>{user.name}</span>
+              <Link to={`/`}>
+                <img style={style.profileImage} src={logo} alt="Logo"/>
+                <span>App Name</span>
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
+              <NavItem>
+                <img style={style.profileImage} src={this.getAvatar()} alt="Profile picture"/>
+                <span>{user.name || 'Set up profile'}</span>
+              </NavItem>
               <NavItem onClick={this.props.logOutUser}>Log out</NavItem>
             </Nav>
           </Navbar.Collapse>

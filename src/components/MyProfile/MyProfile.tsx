@@ -2,16 +2,16 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Grid, Row, Col, FormGroup, FormControl, Button } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
 
-import { updateUserProfile } from '../../redux/actions';
+import { updateUserProfile } from '../../redux/actions/actionCreators';
 import { State } from '../../redux/models/state';
 import { User } from '../../redux/models/user';
 import { Profile } from '../../redux/models/profile';
 
 import Header from '../Header/Header';
 
-interface MyProfileProps {
+interface MyProfileProps extends RouteComponentProps<{}> {
   user: User;
   updateUserProfile: (profile: Profile) => void;
 }

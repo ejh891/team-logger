@@ -1,4 +1,5 @@
-import { actionTypes, AnyAction } from './actions';
+import { actionTypes } from './actions/actionTypes';
+import { AnyAction } from './actions/actions';
 import { State, defaultState } from './models/state';
 
 export default (state: State = defaultState, action: AnyAction) => {
@@ -7,12 +8,26 @@ export default (state: State = defaultState, action: AnyAction) => {
       return {
         ...state,
         user: action.user,
-        setUserError: null, // remove any auth errors
       };
     case actionTypes.SET_USER_ERROR:
       return {
         ...state,
         setUserError: action.error
+      };
+    case actionTypes.CLEAR_SET_USER_ERROR:
+      return {
+        ...state,
+        setUserError: null
+      };
+    case actionTypes.CREATE_USER_ERROR:
+      return {
+        ...state,
+        createUserError: action.error
+      };
+    case actionTypes.CLEAR_CREATE_USER_ERROR:
+      return {
+        ...state,
+        createUserError: null
       };
     case actionTypes.SET_USER_AUTH_STATE_CHANGING:
       return {

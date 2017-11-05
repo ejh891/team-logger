@@ -2,20 +2,15 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Grid, Row, Col } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { State } from '../../redux/models/state';
 import { NullableUser } from '../../redux/models/user';
 
 import Header from '../Header/Header';
 
-interface UserProps {
+interface UserProps extends RouteComponentProps<{ id: string }> {
   user: NullableUser;
-  match: {
-    params: {
-      id: string
-    }
-  };
 }
 
 class User extends React.Component<UserProps> {

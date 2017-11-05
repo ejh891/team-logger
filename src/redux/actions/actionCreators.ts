@@ -12,65 +12,22 @@ import { Dispatch, ActionCreator } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { toast } from 'react-toastify';
 
-import { State } from './models/state';
-import { User } from './models/user';
-import { FirebaseError } from './models/firebaseError';
-import { Profile } from './models/profile';
+import { actionTypes } from './actionTypes';
+import * as actions from './actions';
 
-import { firebaseAuth, firebaseFacebookAuthProvider } from '../firebase/firebaseProvider';
-import { authErrorCodes } from '../enums/authErrorCodes';
+import { State } from '../models/state';
+import { User } from '../models/user';
+import { FirebaseError } from '../models/firebaseError';
+import { Profile } from '../models/profile';
 
-/**********************************************************************************************************************
- * AnyAction - declare the union of all possible action types so that the reducer knows what it can handle
- **********************************************************************************************************************/
-export type AnyAction = 
-  SetUserSuccessAction |
-  SetUserErrorAction |
-  SetUserAuthStateChangingAction |
-  UpdateUserProfileSuccessAction;
-
-/**********************************************************************************************************************
- * ActionTypes - declare all of the possible action types so that the reducer can Switch across them
- **********************************************************************************************************************/
-export enum actionTypes {
-  SET_USER_SUCCESS = 'SET_USER_SUCCESS',
-  SET_USER_ERROR = 'SET_USER_ERROR',
-  SET_USER_AUTH_STATE_CHANGING = 'SET_USER_AUTH_STATE_CHANGING',
-  UPDATE_USER_PROFILE_SUCCESS = 'UPDATE_USER_PROFILE_SUCCESS',
-
-  // system action is never dispatched, but it forces us to add a default case to our reducers
-  // this is important so that redux and middleware can dispatch their own actions and we'll handle it gracefully
-  DEFAULT_ACTION = 'DEFAULT_ACTION',
-}
-
-/**********************************************************************************************************************
- * ActionInterfaces - declare actionType and payloads for each action
- **********************************************************************************************************************/
-export interface SetUserSuccessAction {
-  type: actionTypes.SET_USER_SUCCESS;
-  user: User;
-}
-
-export interface SetUserErrorAction {
-  type: actionTypes.SET_USER_ERROR;
-  error: FirebaseError;
-}
-
-export interface SetUserAuthStateChangingAction {
-  type: actionTypes.SET_USER_AUTH_STATE_CHANGING;
-  userAuthStateChanging: boolean;
-}
-
-export interface UpdateUserProfileSuccessAction {
-  type: actionTypes.UPDATE_USER_PROFILE_SUCCESS;
-  profile: Profile;
-}
+import { firebaseAuth, firebaseFacebookAuthProvider } from '../../firebase/firebaseProvider';
+import { authErrorCodes } from '../../enums/authErrorCodes';
 
 /**********************************************************************************************************************
  * ActionCreators - define functions that create actions
  **********************************************************************************************************************/
 
-export const setUserSuccess: ActionCreator<SetUserSuccessAction> = 
+export const setUserSuccess: ActionCreator<actions.SetUserSuccessAction> = 
   (user: User) => {
     return {
       type: actionTypes.SET_USER_SUCCESS,
@@ -78,7 +35,7 @@ export const setUserSuccess: ActionCreator<SetUserSuccessAction> =
     };
   };
 
-export const setUserError: ActionCreator<SetUserErrorAction> = 
+export const setUserError: ActionCreator<actions.SetUserErrorAction> = 
   (error: FirebaseError) => {
     return {
       type: actionTypes.SET_USER_ERROR,
@@ -86,7 +43,31 @@ export const setUserError: ActionCreator<SetUserErrorAction> =
     };
   };
 
-export const setUserAuthStateChanging: ActionCreator<SetUserAuthStateChangingAction> = 
+export const clearSetUserError: ActionCreator<actions.ClearSetUserErrorAction> = 
+  () => {
+    return {
+      type: actionTypes.CLEAR_SET_USER_ERROR,
+      error: null
+    };
+  };
+
+export const createUserError: ActionCreator<actions.CreateUserErrorAction> = 
+  (error: FirebaseError) => {
+    return {
+      type: actionTypes.CREATE_USER_ERROR,
+      error
+    };
+  };
+
+export const clearCreateUserError: ActionCreator<actions.ClearCreateUserErrorAction> = 
+  () => {
+    return {
+      type: actionTypes.CLEAR_CREATE_USER_ERROR,
+      error: null
+    };
+  };
+
+export const setUserAuthStateChanging: ActionCreator<actions.SetUserAuthStateChangingAction> = 
   (userAuthStateChanging: boolean) => {
     return {
       type: actionTypes.SET_USER_AUTH_STATE_CHANGING,
@@ -94,7 +75,7 @@ export const setUserAuthStateChanging: ActionCreator<SetUserAuthStateChangingAct
     };
   };
 
-export const updateUserProfileSuccess: ActionCreator<UpdateUserProfileSuccessAction> = 
+export const updateUserProfileSuccess: ActionCreator<actions.UpdateUserProfileSuccessAction> = 
   (profile: Profile) => {
     return {
       type: actionTypes.UPDATE_USER_PROFILE_SUCCESS,
@@ -165,7 +146,7 @@ export const createUserViaEmail: ActionCreator<ThunkAction<void, State, void>> =
           var errorCode = error.code;
           var errorMessage = error.message;
           
-          dispatch(setUserError({ code: errorCode, message: errorMessage }));
+          dispatch(createUserError({ code: errorCode, message: errorMessage }));
         });
     };
   };
@@ -200,10 +181,6 @@ export const updateUserProfile: ActionCreator<ThunkAction<void, State, void>> =
         const user = firebaseAuth().currentUser;
         
         if (user === null) {
-          // dispatch(updateUserProfileError({
-          //   error: 'user-is-null',
-          //   message: 'Could not update user because of a null reference'
-          // }));
           toast.error('Whoops! Null ref, bro'); // todo: better error message
         } else {
           user.updateProfile({
@@ -213,7 +190,6 @@ export const updateUserProfile: ActionCreator<ThunkAction<void, State, void>> =
             dispatch(updateUserProfileSuccess(profile));
           }).catch(function(error: Error) {
             toast.error('Whoops! ' + error.message);
-            // dispatch(updateUserProfileError(error));
           });
         }
       };
