@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Row, Nav, Navbar, NavItem } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { withRouter, Link, RouteComponentProps } from 'react-router-dom';
 
 import { State } from '../../redux/models/state';
 import { logOutUser } from '../../redux/actions/actionCreators';
@@ -20,7 +20,7 @@ const style = {
   },
 };
 
-interface HeaderProps {
+interface HeaderProps extends RouteComponentProps<{}> {
   user: User;
   logOutUser: () => void;
 }
@@ -52,7 +52,7 @@ class Header extends React.Component<HeaderProps> {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavItem>
+              <NavItem onClick={() => { this.props.history.push('my-profile'); }}>
                 <img style={style.profileImage} src={this.getAvatar()} alt="Profile picture"/>
                 <span>{user.name || 'Set up profile'}</span>
               </NavItem>
@@ -77,4 +77,4 @@ const mapDispatchToProps = (dispatch: Dispatch<State>) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default withRouter<{}>(connect(mapStateToProps, mapDispatchToProps)(Header));
