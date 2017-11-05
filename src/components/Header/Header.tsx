@@ -8,6 +8,8 @@ import { State } from '../../redux/models/state';
 import { logOutUser } from '../../redux/actions';
 import { User } from '../../redux/models/user';
 
+const defaultAvatar = require('../../images/poop-emoji.png');
+
 const style = {
   profileImage: {
     display: 'inline-block',
@@ -26,8 +28,13 @@ class Header extends React.Component<HeaderProps> {
   constructor(props: HeaderProps) {
     super(props);
 
+    this.getAvatar = this.getAvatar.bind(this);
   }
   
+  getAvatar() {
+    return this.props.user.photoURL !== null ? this.props.user.photoURL : defaultAvatar;
+  }
+
   render() {
     const { user } = this.props;
     return (
@@ -35,8 +42,8 @@ class Header extends React.Component<HeaderProps> {
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to={`/users/${user.id}`}>
-                <img style={style.profileImage} src={user.photoURL} alt="Profile picture"/>
+              <Link to={`/my-profile`}>
+                <img style={style.profileImage} src={this.getAvatar()} alt="Profile picture"/>
                 <span>{user.name}</span>
               </Link>
             </Navbar.Brand>
