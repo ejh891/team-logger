@@ -2,6 +2,7 @@ import { actionTypes } from './actionTypes';
 import { User } from '../models/user';
 import { FirebaseError } from '../models/firebaseError';
 import { Profile } from '../models/profile';
+import { PostBody } from '../models/postBody';
 
 /**********************************************************************************************************************
  * AnyAction - declare the union of all possible action types so that the reducer knows what it can handle
@@ -13,7 +14,9 @@ export type AnyAction =
   CreateUserErrorAction |
   ClearCreateUserErrorAction |
   SetUserAuthStateChangingAction |
-  UpdateUserProfileSuccessAction;
+  UpdateUserProfileSuccessAction |
+  SetPostsSuccessAction |
+  SetUsersSuccessAction;
 
 /**********************************************************************************************************************
  * ActionInterfaces - declare actionType and payloads for each action
@@ -49,4 +52,14 @@ export interface SetUserAuthStateChangingAction {
 export interface UpdateUserProfileSuccessAction {
   type: actionTypes.UPDATE_USER_PROFILE_SUCCESS;
   profile: Profile;
+}
+
+export interface SetPostsSuccessAction {
+  type: actionTypes.SET_POSTS_SUCCESS;
+  posts: PostBody[];
+}
+
+export interface SetUsersSuccessAction {
+  type: actionTypes.SET_USERS_SUCCESS;
+  users: {[key: string]: User};
 }

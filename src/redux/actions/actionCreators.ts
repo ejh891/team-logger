@@ -18,17 +18,23 @@ import * as actions from './actions';
 import { State } from '../models/state';
 import { User } from '../models/user';
 import { FirebaseError } from '../models/firebaseError';
+import { PostBody } from '../models/postBody';
 import { Profile } from '../models/profile';
 
-import { firebaseAuth, firebaseFacebookAuthProvider } from '../../firebase/firebaseProvider';
+import { firebaseAuth, firebaseFacebookAuthProvider, firebaseDatabase } from '../../firebase/firebaseProvider';
 import { authErrorCodes } from '../../enums/authErrorCodes';
 
 /**********************************************************************************************************************
  * ActionCreators - define functions that create actions
  **********************************************************************************************************************/
+function _saveUser(user: User) { // saves the user's info in our db so that the info is available for querying
+  firebaseDatabase().ref(`users/${user.id}`).set({ id: user.id, name: user.name, photoURL: user.photoURL });
+}
 
 export const setUserSuccess: ActionCreator<actions.SetUserSuccessAction> = 
   (user: User) => {
+    _saveUser(user);
+    
     return {
       type: actionTypes.SET_USER_SUCCESS,
       user
@@ -76,10 +82,26 @@ export const setUserAuthStateChanging: ActionCreator<actions.SetUserAuthStateCha
   };
 
 export const updateUserProfileSuccess: ActionCreator<actions.UpdateUserProfileSuccessAction> = 
-  (profile: Profile) => {
+  (profile: Profile) => {    
     return {
       type: actionTypes.UPDATE_USER_PROFILE_SUCCESS,
       profile
+    };
+  };
+
+export const setPostsSuccess: ActionCreator<actions.SetPostsSuccessAction> = 
+  (posts: PostBody[]) => {    
+    return {
+      type: actionTypes.SET_POSTS_SUCCESS,
+      posts
+    };
+  };
+
+export const setUsersSuccess: ActionCreator<actions.SetUsersSuccessAction> = 
+  (users: {[key: string]: User}) => {    
+    return {
+      type: actionTypes.SET_USERS_SUCCESS,
+      users
     };
   };
 
@@ -101,6 +123,42 @@ export const observeAuthState: ActionCreator<ThunkAction<void, State, void>> =
     };
   };
 
+export const subscribeToPosts: ActionCreator<ThunkAction<void, State, void>> =
+  () => {
+    return (dispatch: Dispatch<State>) => {
+      const postsRef = firebaseDatabase().ref('posts');
+      
+      postsRef.on('value', (snapshot) => {
+        if (snapshot === null) { return; }
+        
+        const postMap = snapshot.val();
+
+        const posts = [];
+        for (let postId in postMap) {
+          if (postMap.hasOwnProperty(postId)) {
+            posts.unshift(postMap[postId]);
+          }
+        }
+
+        dispatch(setPostsSuccess(posts));
+      });
+    };
+  };
+
+export const subscribeToUsers: ActionCreator<ThunkAction<void, State, void>> =
+  () => {
+    return (dispatch: Dispatch<State>) => {
+      const postsRef = firebaseDatabase().ref('users');
+      
+      postsRef.on('value', (snapshot) => {
+        if (snapshot === null) { return; }
+        
+        const userMap = snapshot.val();
+
+        dispatch(setUsersSuccess(userMap));
+      });
+    };
+  };
 export const logInUserViaFacebook: ActionCreator<ThunkAction<void, State, void>> =
   () => {
       return (dispatch: Dispatch<State>) => {
@@ -165,11 +223,9 @@ export const sendPasswordResetEmail: ActionCreator<ThunkAction<void, State, void
       return (dispatch: Dispatch<State>) => {
         firebaseAuth().sendPasswordResetEmail(email)
           .then(function() {
-            // dispatch(sendPasswordResetEmailSuccess());
             toast.success('Email sent!');
           })
           .catch(function(error: FirebaseError) {
-            // dispatch(sendPasswordResetEmailError(error));
             toast.error('Whoops! ' + error.message);
           });
       };
@@ -194,3 +250,10 @@ export const updateUserProfile: ActionCreator<ThunkAction<void, State, void>> =
         }
       };
     };
+
+export const submitPost: ActionCreator<ThunkAction<void, State, void>> =
+  (post: PostBody) => {
+    return (dispatch: Dispatch<State>) => {
+      firebaseDatabase().ref(`posts`).push(post);
+    };        
+  };

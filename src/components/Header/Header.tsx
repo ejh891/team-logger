@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Row, Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Row, Nav, Navbar, NavItem, Image } from 'react-bootstrap';
 import { withRouter, Link, RouteComponentProps } from 'react-router-dom';
 
 import { State } from '../../redux/models/state';
@@ -45,7 +45,7 @@ class Header extends React.Component<HeaderProps> {
             <Navbar.Brand>
               <Link to={`/`}>
                 <img style={style.profileImage} src={logo} alt="Logo"/>
-                <span>App Name</span>
+                <span>Logger</span>
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle />
@@ -53,7 +53,12 @@ class Header extends React.Component<HeaderProps> {
           <Navbar.Collapse>
             <Nav>
               <NavItem onClick={() => { this.props.history.push('my-profile'); }}>
-                <img style={style.profileImage} src={this.getAvatar()} alt="Profile picture"/>
+                <Image
+                  style={style.profileImage}
+                  src={this.getAvatar()}
+                  alt="Profile picture"
+                  circle={true}
+                />
                 <span>{user.name || 'Set up profile'}</span>
               </NavItem>
               <NavItem onClick={this.props.logOutUser}>Log out</NavItem>

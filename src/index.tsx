@@ -8,12 +8,14 @@ import { ToastContainer } from 'react-toastify';
 import { getStore } from './redux/store';
 import { defaultState } from './redux/models/state'; 
 
-import App from './components/App/App';
+import NewsFeed from './components/NewsFeed/NewsFeed';
 import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
 import User from './components/User/User';
 import MyProfile from './components/MyProfile/MyProfile';
-import { observeAuthState } from './redux/actions/actionCreators';
+import CreatePost from './components/CreatePost/CreatePost';
+
+import { observeAuthState, subscribeToPosts, subscribeToUsers } from './redux/actions/actionCreators';
 
 import './index.css';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -21,6 +23,8 @@ import 'react-toastify/dist/ReactToastify.min.css';
 const store = getStore(defaultState);
 
 store.dispatch(observeAuthState()); // listen for auth-state changes
+store.dispatch(subscribeToPosts()); // listen for posts
+store.dispatch(subscribeToUsers()); // listen for new users
 
 ReactDOM.render(
   <Provider store={store}>
@@ -28,7 +32,8 @@ ReactDOM.render(
       <ToastContainer position="bottom-right"/>
       <Router>
         <Switch>
-          <Route exact={true} path="/" component={App} />
+          <Route exact={true} path="/" component={NewsFeed} />
+          <Route path="/create-post" component={CreatePost} />
           <Route path="/sign-in" component={SignIn} />
           <Route path="/sign-up" component={SignUp} />
           <Route path="/users/:id" component={User} />

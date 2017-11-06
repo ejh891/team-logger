@@ -39,6 +39,16 @@ export default (state: State = defaultState, action: AnyAction) => {
         ...state,
         user: Object.assign({}, state.user, action.profile) // merge profile into user
       };
+    case actionTypes.SET_POSTS_SUCCESS:
+      return {
+        ...state,
+        posts: action.posts
+      };
+      case actionTypes.SET_USERS_SUCCESS:
+      return {
+        ...state,
+        users: action.users
+      };
     default:
       return state;
   }

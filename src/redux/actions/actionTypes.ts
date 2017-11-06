@@ -9,6 +9,8 @@ export enum actionTypes {
   CLEAR_CREATE_USER_ERROR = 'CLEAR_CREATE_USER_ERROR',
   SET_USER_AUTH_STATE_CHANGING = 'SET_USER_AUTH_STATE_CHANGING',
   UPDATE_USER_PROFILE_SUCCESS = 'UPDATE_USER_PROFILE_SUCCESS',
+  SET_POSTS_SUCCESS = 'SET_POSTS_SUCCESS',
+  SET_USERS_SUCCESS = 'SET_USERS_SUCCESS',
 
   // system action is never dispatched, but it forces us to add a default case to our reducers
   // this is important so that redux and middleware can dispatch their own actions and we'll handle it gracefully

@@ -1,0 +1,41 @@
+#create-post-button {
+  position: fixed;
+  padding: 16px 24px;
+  bottom: 40px;
+  right: 40px;
+  border-radius: 50%;
+  background-color: #663333;
+  color: white;
+  font-size: 24px;
+}
+
+.post {
+  border-bottom: 1px solid #663333;
+  padding: 20px;
+}
+
+.post-author-avatar {
+  height: 40px;
+  width: 40px;
+  margin-right: 10px;
+}
+
+.post-author-name {
+  display: inline-block;
+  font-size: 20px;
+}
+
+.post-timestamp {
+  display: inline-block;
+  color: #aaaaaa;
+}
+
+.post-body-rating-image {
+  height: 64px;
+  width: 76px;
+}
+
+.post-body-comment {
+  display: inline-block;
+  font-size: 16px;
+}
