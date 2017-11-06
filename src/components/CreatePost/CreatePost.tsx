@@ -106,9 +106,9 @@ class CreatePost extends React.Component<CreatePostProps, CreatePostState> {
     return (
       <Grid>
         <Header />
-        <Row>
+        <Row style={{marginTop: '40px'}}>
           <Col xs={12}>
-            <h1>Log a poo</h1>
+            <h1>Write a Poost</h1>
           </Col>
         </Row>
         <Row>
@@ -131,7 +131,7 @@ class CreatePost extends React.Component<CreatePostProps, CreatePostState> {
           <Col xs={4}>{this.renderPooRatingButton(ratings.smile)}</Col>
           <Col xs={4}>{this.renderPooRatingButton(ratings.heart)}</Col>
         </Row>
-        <Row>
+        <Row style={style.pooRatingRow}>
           <Col xs={12}>
             <FormGroup
               controlId="commentInput"

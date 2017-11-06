@@ -40,7 +40,7 @@ class Header extends React.Component<HeaderProps> {
     const { user } = this.props;
     return (
       <Row>
-        <Navbar>
+        <Navbar fixedTop={true}>
           <Navbar.Header>
             <Navbar.Brand>
               <Link to={`/`}>

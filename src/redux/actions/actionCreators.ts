@@ -24,16 +24,25 @@ import { Profile } from '../models/profile';
 import { firebaseAuth, firebaseFacebookAuthProvider, firebaseDatabase } from '../../firebase/firebaseProvider';
 import { authErrorCodes } from '../../enums/authErrorCodes';
 
+const defaultAvatarSrc = require('../../images/logo.png');
+
 /**********************************************************************************************************************
  * ActionCreators - define functions that create actions
  **********************************************************************************************************************/
-function _saveUser(user: User) { // saves the user's info in our db so that the info is available for querying
-  firebaseDatabase().ref(`users/${user.id}`).set({ id: user.id, name: user.name, photoURL: user.photoURL });
+
+ // saves the user's info in our db so that the info is available for querying
+function _saveUser(user: {id: string, name: string | null, photoURL: string | null}) {
+  const name = user.name || 'Unidentified Poo-Boy';
+  const photoURL = user.photoURL || defaultAvatarSrc;
+
+  firebaseDatabase().ref(`users/${user.id}`).set({ id: user.id, name, photoURL });
 }
 
 export const setUserSuccess: ActionCreator<actions.SetUserSuccessAction> = 
   (user: User) => {
-    _saveUser(user);
+    if (user !== null) {
+      _saveUser(user);
+    }
     
     return {
       type: actionTypes.SET_USER_SUCCESS,
@@ -159,6 +168,7 @@ export const subscribeToUsers: ActionCreator<ThunkAction<void, State, void>> =
       });
     };
   };
+
 export const logInUserViaFacebook: ActionCreator<ThunkAction<void, State, void>> =
   () => {
       return (dispatch: Dispatch<State>) => {
@@ -234,16 +244,25 @@ export const sendPasswordResetEmail: ActionCreator<ThunkAction<void, State, void
 export const updateUserProfile: ActionCreator<ThunkAction<void, State, void>> =
     (profile: Profile) => {
       return (dispatch: Dispatch<State>) => {
-        const user = firebaseAuth().currentUser;
+        const firebaseUser = firebaseAuth().currentUser;
         
-        if (user === null) {
+        if (firebaseUser === null) {
           toast.error('Whoops! Null ref, bro'); // todo: better error message
         } else {
-          user.updateProfile({
+          firebaseUser.updateProfile({
             displayName: profile.name,
             photoURL: profile.photoURL
           }).then(function() {
+            const user = {
+              id: firebaseUser.uid,
+              name: firebaseUser.displayName,
+              photoURL: firebaseUser.photoURL
+            };
+
+            _saveUser(user);
+
             dispatch(updateUserProfileSuccess(profile));
+            toast.success('Poofile has been updated');
           }).catch(function(error: Error) {
             toast.error('Whoops! ' + error.message);
           });

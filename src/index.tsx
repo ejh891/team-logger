@@ -11,7 +11,7 @@ import { defaultState } from './redux/models/state';
 import NewsFeed from './components/NewsFeed/NewsFeed';
 import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
-import User from './components/User/User';
+import UserProfile from './components/UserProfile/UserProfile';
 import MyProfile from './components/MyProfile/MyProfile';
 import CreatePost from './components/CreatePost/CreatePost';
 
@@ -29,14 +29,14 @@ store.dispatch(subscribeToUsers()); // listen for new users
 ReactDOM.render(
   <Provider store={store}>
     <div>
-      <ToastContainer position="bottom-right"/>
+      <ToastContainer position="bottom-center"/>
       <Router>
         <Switch>
           <Route exact={true} path="/" component={NewsFeed} />
           <Route path="/create-post" component={CreatePost} />
           <Route path="/sign-in" component={SignIn} />
           <Route path="/sign-up" component={SignUp} />
-          <Route path="/users/:id" component={User} />
+          <Route path="/users/:id" component={UserProfile} />
           <Route path="/my-profile" component={MyProfile} />
         </Switch>
       </Router>

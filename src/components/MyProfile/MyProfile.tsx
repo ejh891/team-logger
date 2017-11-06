@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Grid, Row, Col, FormGroup, FormControl, Button } from 'react-bootstrap';
+import { Grid, Row, Col, FormGroup, FormControl, Button, Image } from 'react-bootstrap';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { updateUserProfile } from '../../redux/actions/actionCreators';
@@ -32,8 +32,8 @@ class MyProfile extends React.Component<MyProfileProps, MyProfileState> {
 
     if (this.props.user !== null) {
       defaultState = {
-        name: this.props.user.name,
-        photoURL: this.props.user.photoURL
+        name: this.props.user.name || '',
+        photoURL: this.props.user.photoURL || ''
       };
     }
 
@@ -65,11 +65,20 @@ class MyProfile extends React.Component<MyProfileProps, MyProfileState> {
     return (
       <Grid>
         <Header />
+        <Row style={{marginTop: '40px'}}>
+          <Col xs={12}>
+            <h1>My Poofile</h1>
+          </Col>
+        </Row>
         <Row>
+          <Col xs={12}>
+            <Image style={{height: '100px', width: '100px'}} src={this.state.photoURL} circle={true} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '10px'}}>
           <Col xs={12}>
             <FormGroup
               controlId="updateProfileForm"
-              // validationState={this.getEmailSignUpValidationState()}
             >
               <FormControl
                 type="text"
@@ -84,12 +93,6 @@ class MyProfile extends React.Component<MyProfileProps, MyProfileState> {
                 placeholder="Link to an image"
                 onChange={this.handlePhotoURLChange}
               />
-              {/* {this.props.setUserError &&
-                <div>
-                  <HelpBlock>{this.props.setUserError.message}</HelpBlock>
-                  {this.getHelpSuggestion()}
-                </div>
-              } */}
             </FormGroup>
             <Button
               bsStyle="default"
