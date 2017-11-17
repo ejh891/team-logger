@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/material-ui": "^0.18.4",
+    "@types/react-tap-event-plugin": "^0.0.30",
     "firebase": "^4.6.1",
     "material-ui": "^0.19.4",
     "moment": "^2.19.1",
