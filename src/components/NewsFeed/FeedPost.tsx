@@ -50,7 +50,7 @@ class FeedPost extends React.Component<FeedPostProps> {
       <Row>
         <Col xs={12}>
           <div className="post">
-            <div className="post-header" onClick={() => { this.props.history.push(`/users/${user.id}`); }}>
+            <div className="post-header" onClick={() => { this.props.history.push(`/users/${postAuthor.id}`); }}>
               <Image className="post-author-avatar" src={postAuthor.photoURL} circle={true}/>
               <div className="post-author-name">{postAuthor.name}</div>
               <div className="post-timestamp pull-right" title={timestamp.toString()}>{timestampDisplay}</div>
