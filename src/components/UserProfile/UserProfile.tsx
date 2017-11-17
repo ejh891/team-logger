@@ -6,14 +6,14 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import { State } from '../../redux/models/state';
 import { User } from '../../redux/models/user';
-import { PostBody } from '../../redux/models/postBody';
+import { RatifiedPostBody } from '../../redux/models/postBody';
 
 import Header from '../Header/Header';
 import FeedPost from '../NewsFeed/FeedPost';
 
 interface UserProfileProps extends RouteComponentProps<{ id: string }> {
   users: {[key: string]: User};
-  posts: PostBody[];
+  posts: RatifiedPostBody[];
 }
 
 class UserProfile extends React.Component<UserProfileProps> {

@@ -8,7 +8,7 @@ import * as FontAwesome from 'react-fontawesome';
 
 import { State } from '../../redux/models/state';
 import { User } from '../../redux/models/user';
-import { PostBody } from '../../redux/models/postBody';
+import { RatifiedPostBody } from '../../redux/models/postBody';
 import * as ratings from '../../maps/ratings';
 import { likePost, unlikePost } from '../../redux/actions/actionCreators';
 
@@ -16,8 +16,8 @@ import './newsFeed.css';
 
 interface FeedPostProps extends RouteComponentProps<{}> {
   user: User;
-  posts: PostBody[];
-  post: PostBody;
+  posts: RatifiedPostBody[];
+  post: RatifiedPostBody;
   users: {[key: string]: User};
   likePost: (postId: string) => void;
   unlikePost: (postId: string) => void;
@@ -81,19 +81,15 @@ class FeedPost extends React.Component<FeedPostProps> {
   }
 
   likePost() {
-    if (this.props.post.id !== undefined) {
-      this.props.likePost(this.props.post.id);
-    }
+    this.props.likePost(this.props.post.id);
   }
 
   unlikePost() {
-    if (this.props.post.id !== undefined) {
-      this.props.unlikePost(this.props.post.id);
-    }
+    this.props.unlikePost(this.props.post.id);
   }
 }
 
-const mapStateToProps = (state: State, ownProps: {post: PostBody}) => {
+const mapStateToProps = (state: State, ownProps: {post: RatifiedPostBody}) => {
   return {
     user: state.user,
     posts: state.posts,
@@ -113,4 +109,4 @@ const mapDispatchToProps = (dispatch: Dispatch<State>) => {
     };
 };
 
-export default withRouter<{post: PostBody}>(connect(mapStateToProps, mapDispatchToProps)(FeedPost));
+export default withRouter<{post: RatifiedPostBody}>(connect(mapStateToProps, mapDispatchToProps)(FeedPost));

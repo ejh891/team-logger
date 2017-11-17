@@ -18,7 +18,7 @@ import * as actions from './actions';
 import { State } from '../models/state';
 import { User } from '../models/user';
 import { FirebaseError } from '../models/firebaseError';
-import { PostBody } from '../models/postBody';
+import { DraftPostBody, RatifiedPostBody } from '../models/postBody';
 import { Profile } from '../models/profile';
 
 import { firebaseAuth, firebaseFacebookAuthProvider, firebaseDatabase } from '../../firebase/firebaseProvider';
@@ -99,7 +99,7 @@ export const updateUserProfileSuccess: ActionCreator<actions.UpdateUserProfileSu
   };
 
 export const setPostsSuccess: ActionCreator<actions.SetPostsSuccessAction> = 
-  (posts: PostBody[]) => {    
+  (posts: RatifiedPostBody[]) => {    
     return {
       type: actionTypes.SET_POSTS_SUCCESS,
       posts
@@ -146,9 +146,13 @@ export const subscribeToPosts: ActionCreator<ThunkAction<void, State, void>> =
         for (let postId in postMap) {
           if (postMap.hasOwnProperty(postId)) {
             postMap[postId].id = postId; // set the firebase key as the id of this post
-            posts.unshift(postMap[postId]);
+            posts.push(postMap[postId]);
           }
         }
+
+        posts.sort((a: RatifiedPostBody, b: RatifiedPostBody) => {
+          return b.timestamp - a.timestamp;
+        });
 
         dispatch(setPostsSuccess(posts));
       });
@@ -272,7 +276,7 @@ export const updateUserProfile: ActionCreator<ThunkAction<void, State, void>> =
     };
 
 export const submitPost: ActionCreator<ThunkAction<void, State, void>> =
-  (post: PostBody) => {
+  (post: DraftPostBody) => {
     return (dispatch: Dispatch<State>) => {
       firebaseDatabase().ref(`posts`).push(post);
     };        
@@ -290,7 +294,7 @@ export const likePost: ActionCreator<ThunkAction<void, State, void>> =
       const currentUserId = state.user.id;
       const postRef = firebaseDatabase().ref(`posts/${postId}`);
 
-      postRef.transaction(function(existingState: PostBody) {
+      postRef.transaction(function(existingState: RatifiedPostBody) {
         const currentUsersWhoLikeThis = existingState.usersWhoLikeThis || [];
         const usersWhoLikeThis = [...currentUsersWhoLikeThis, currentUserId];
   
@@ -311,7 +315,7 @@ export const unlikePost: ActionCreator<ThunkAction<void, State, void>> =
       const currentUserId = state.user.id;
       const postRef = firebaseDatabase().ref(`posts/${postId}`);
 
-      postRef.transaction(function(existingState: PostBody) {
+      postRef.transaction(function(existingState: RatifiedPostBody) {
         const currentUsersWhoLikeThis = existingState.usersWhoLikeThis || [];
         const usersWhoLikeThis = currentUsersWhoLikeThis.filter(userId => userId !== currentUserId);
   

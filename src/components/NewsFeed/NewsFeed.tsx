@@ -8,7 +8,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import { State } from '../../redux/models/state';
 import { NullableUser } from '../../redux/models/user';
-import { PostBody } from '../../redux/models/postBody';
+import { RatifiedPostBody } from '../../redux/models/postBody';
 
 import Header from '../Header/Header';
 import FeedPost from './FeedPost';
@@ -18,7 +18,7 @@ import './newsFeed.css';
 interface NewsFeedProps extends RouteComponentProps<{}> {
   user: NullableUser;
   userAuthStateChanging: boolean;
-  posts: PostBody[];
+  posts: RatifiedPostBody[];
 }
 
 class NewsFeed extends React.Component<NewsFeedProps> {
@@ -37,7 +37,7 @@ class NewsFeed extends React.Component<NewsFeedProps> {
             <h1>Poo's Feed</h1>
           </Col>
         </Row>
-        {posts.map((post, index) => <FeedPost key={index} post={post} />)}
+        {posts.map((post, index) => <FeedPost key={post.id} post={post} />)}
         <FloatingActionButton
           className="create-post-button"
           backgroundColor="#663333"

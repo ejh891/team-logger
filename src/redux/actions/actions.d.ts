@@ -2,7 +2,7 @@ import { actionTypes } from './actionTypes';
 import { User } from '../models/user';
 import { FirebaseError } from '../models/firebaseError';
 import { Profile } from '../models/profile';
-import { PostBody } from '../models/postBody';
+import { RatifiedPostBody } from '../models/postBody';
 
 /**********************************************************************************************************************
  * AnyAction - declare the union of all possible action types so that the reducer knows what it can handle
@@ -56,7 +56,7 @@ export interface UpdateUserProfileSuccessAction {
 
 export interface SetPostsSuccessAction {
   type: actionTypes.SET_POSTS_SUCCESS;
-  posts: PostBody[];
+  posts: RatifiedPostBody[];
 }
 
 export interface SetUsersSuccessAction {

@@ -1,13 +1,13 @@
 import { User, NullableUser } from './user';
 import { NullableFirebaseError } from './firebaseError';
-import { PostBody } from './postBody';
+import { RatifiedPostBody } from './postBody';
 
 export interface State {
     user: NullableUser;
     userAuthStateChanging: boolean;
     setUserError: NullableFirebaseError;
     createUserError: NullableFirebaseError;
-    posts: PostBody[];
+    posts: RatifiedPostBody[];
     users: {[key: string]: User};
 }
 

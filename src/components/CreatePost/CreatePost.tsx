@@ -7,7 +7,7 @@ import { Grid, Row, Col, FormGroup, FormControl, Button } from 'react-bootstrap'
 import Header from '../Header/Header';
 import { State } from '../../redux/models/state';
 import { User } from '../../redux/models/user';
-import { PostBody } from '../../redux/models/postBody';
+import { DraftPostBody } from '../../redux/models/postBody';
 import * as ratings from '../../maps/ratings';
 
 import { submitPost } from '../../redux/actions/actionCreators';
@@ -28,7 +28,7 @@ const style = {
 
 interface CreatePostProps extends RouteComponentProps<{}> {
   user: User;
-  submitPost: (post: PostBody) => void;
+  submitPost: (post: DraftPostBody) => void;
 }
 
 interface CreatePostState {
@@ -69,12 +69,11 @@ class CreatePost extends React.Component<CreatePostProps, CreatePostState> {
 
     if (rating === null || comment.length === 0) { return; }
 
-    const post: PostBody = {
+    const post: DraftPostBody = {
       userId: user.id,
       rating,
       comment,
       timestamp: new Date().getTime(),
-      usersWhoLikeThis: []
     };
 
     this.props.submitPost(post);
@@ -176,7 +175,7 @@ const mapStateToProps = (state: State) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<State>) => {
     return {
-      submitPost: (post: PostBody) => { dispatch(submitPost(post)); }
+      submitPost: (post: DraftPostBody) => { dispatch(submitPost(post)); }
     };
 };
 
