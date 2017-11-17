@@ -73,7 +73,8 @@ class CreatePost extends React.Component<CreatePostProps, CreatePostState> {
       userId: user.id,
       rating,
       comment,
-      timestamp: new Date().getTime()
+      timestamp: new Date().getTime(),
+      usersWhoLikeThis: []
     };
 
     this.props.submitPost(post);

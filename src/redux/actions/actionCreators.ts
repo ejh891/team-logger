@@ -145,6 +145,7 @@ export const subscribeToPosts: ActionCreator<ThunkAction<void, State, void>> =
         const posts = [];
         for (let postId in postMap) {
           if (postMap.hasOwnProperty(postId)) {
+            postMap[postId].id = postId; // set the firebase key as the id of this post
             posts.unshift(postMap[postId]);
           }
         }
@@ -275,4 +276,46 @@ export const submitPost: ActionCreator<ThunkAction<void, State, void>> =
     return (dispatch: Dispatch<State>) => {
       firebaseDatabase().ref(`posts`).push(post);
     };        
+  };
+
+export const likePost: ActionCreator<ThunkAction<void, State, void>> =
+  (postId: string) => {
+    return (dispatch: Dispatch<State>, getState: () => State) => {
+      const state = getState();
+      if (state === null || state.user === null) {
+        toast.error('Whoops! Something went wrong');
+        throw new Error('Could not determine user in order to like post');
+      }
+
+      const currentUserId = state.user.id;
+      const postRef = firebaseDatabase().ref(`posts/${postId}`);
+
+      postRef.transaction(function(existingState: PostBody) {
+        const currentUsersWhoLikeThis = existingState.usersWhoLikeThis || [];
+        const usersWhoLikeThis = [...currentUsersWhoLikeThis, currentUserId];
+  
+        return { ...existingState, usersWhoLikeThis };
+      });
+    };
+  };
+
+export const unlikePost: ActionCreator<ThunkAction<void, State, void>> =
+  (postId: string) => {
+    return (dispatch: Dispatch<State>, getState: () => State) => {
+      const state = getState();
+      if (state === null || state.user === null) {
+        toast.error('Whoops! Something went wrong');
+        throw new Error('Could not determine user in order to like post');
+      }
+
+      const currentUserId = state.user.id;
+      const postRef = firebaseDatabase().ref(`posts/${postId}`);
+
+      postRef.transaction(function(existingState: PostBody) {
+        const currentUsersWhoLikeThis = existingState.usersWhoLikeThis || [];
+        const usersWhoLikeThis = currentUsersWhoLikeThis.filter(userId => userId !== currentUserId);
+  
+        return { ...existingState, usersWhoLikeThis };
+      });
+    };
   };
