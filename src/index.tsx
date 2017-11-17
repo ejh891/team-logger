@@ -4,6 +4,8 @@ import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import * as injectTapEventPlugin from 'react-tap-event-plugin';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import { getStore } from './redux/store';
 import { defaultState } from './redux/models/state'; 
@@ -20,6 +22,10 @@ import { observeAuthState, subscribeToPosts, subscribeToUsers } from './redux/ac
 import './index.css';
 import 'react-toastify/dist/ReactToastify.min.css';
 
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin();
+
 const store = getStore(defaultState);
 
 store.dispatch(observeAuthState()); // listen for auth-state changes
@@ -28,19 +34,21 @@ store.dispatch(subscribeToUsers()); // listen for new users
 
 ReactDOM.render(
   <Provider store={store}>
-    <div>
-      <ToastContainer position="bottom-center"/>
-      <Router>
-        <Switch>
-          <Route exact={true} path="/" component={NewsFeed} />
-          <Route path="/create-post" component={CreatePost} />
-          <Route path="/sign-in" component={SignIn} />
-          <Route path="/sign-up" component={SignUp} />
-          <Route path="/users/:id" component={UserProfile} />
-          <Route path="/my-profile" component={MyProfile} />
-        </Switch>
-      </Router>
-    </div>
+    <MuiThemeProvider>
+      <div>
+        <Router>
+          <Switch>
+            <Route exact={true} path="/" component={NewsFeed} />
+            <Route path="/create-post" component={CreatePost} />
+            <Route path="/sign-in" component={SignIn} />
+            <Route path="/sign-up" component={SignUp} />
+            <Route path="/users/:id" component={UserProfile} />
+            <Route path="/my-profile" component={MyProfile} />
+          </Switch>
+        </Router>
+        <ToastContainer position="bottom-center"/>
+      </div>
+    </MuiThemeProvider>
   </Provider>,
   document.getElementById('root') as HTMLElement
 );

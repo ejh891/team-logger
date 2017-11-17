@@ -1,14 +1,8 @@
-#create-post-button {
+.create-post-button {
   position: fixed;
-  padding: 14px 24px;
   bottom: 40px;
   right: 40px;
-  border-radius: 50%;
-  background-color: #663333;
-  color: white;
-  font-size: 24px;
   z-index: 1;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px;
 }
 
 .post {
