@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import * as emojione from 'emojione';
 
-import './reactionPicker.css';
+import './reactions.css';
 
 interface ReactionButtonProps {
   emojiShortName: string;

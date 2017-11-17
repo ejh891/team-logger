@@ -9,17 +9,17 @@ import { User } from '../../redux/models/user';
 
 import ReactionButton from './ReactionButton';
 
-import './reactionPicker.css';
+import './reactions.css';
 
-interface ReactionPickerProps {
+interface ReactionBarProps {
     postId: string;
     user: User;
 }
 
-class ReactionPicker extends React.Component<ReactionPickerProps> {
+class ReactionBar extends React.Component<ReactionBarProps> {
   availableEmojis: string[];
 
-  constructor(props: ReactionPickerProps) {
+  constructor(props: ReactionBarProps) {
     super(props);
     
     this.availableEmojis = [
@@ -65,4 +65,4 @@ const mapDispatchToProps = (dispatch: Dispatch<State>) => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReactionPicker);
+export default connect(mapStateToProps, mapDispatchToProps)(ReactionBar);
