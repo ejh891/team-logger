@@ -4,13 +4,15 @@ import { Dispatch } from 'redux';
 import { Row, Col, Image } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import * as moment from 'moment';
-import * as FontAwesome from 'react-fontawesome';
 
 import { State } from '../../redux/models/state';
 import { User } from '../../redux/models/user';
 import { RatifiedPostBody } from '../../redux/models/postBody';
-import * as ratings from '../../maps/ratings';
 import { likePost, unlikePost } from '../../redux/actions/actionCreators';
+
+import * as ratings from '../../maps/ratings';
+
+import ReactionPicker from '../ReactionPicker/ReactionPicker';
 
 import './newsFeed.css';
 
@@ -32,7 +34,11 @@ class FeedPost extends React.Component<FeedPostProps> {
   }
 
   render() {
-    const { user, users, post } = this.props;
+    const { 
+    //  user,
+      users,
+      post
+    } = this.props;
     
     // if our user map hasn't loaded yet
     if (Object.keys(users).length === 0) { return (<div>Loading...</div>); }
@@ -42,10 +48,7 @@ class FeedPost extends React.Component<FeedPostProps> {
     const timestamp = moment(post.timestamp);
     const timestampDisplay = moment().subtract(1, 'day').isBefore(timestamp) ? 
       timestamp.fromNow() : timestamp.format('ddd, MMM Do');
-    const usersWhoLikeThis = new Set(post.usersWhoLikeThis);
     
-    const currentUserLikesThis = usersWhoLikeThis.has(user.id);
-
     return (
       <Row>
         <Col xs={12}>
@@ -60,19 +63,7 @@ class FeedPost extends React.Component<FeedPostProps> {
               <div className="post-body-comment">{post.comment}</div>
             </div>
             <div className="post-actions">
-            {currentUserLikesThis && 
-              <div className="post-like-button" onClick={this.unlikePost}>
-                <FontAwesome className="post-like-button-icon" name="thumbs-up" />
-                <div className="post-like-button-text">Like ({usersWhoLikeThis.size})</div>
-              </div>
-            }
-            {!currentUserLikesThis &&
-              <div className="post-like-button" onClick={this.likePost}>
-                <FontAwesome className="post-like-button-icon" name="thumbs-o-up" />
-                <div className="post-like-button-text">Like ({usersWhoLikeThis.size})</div>
-              </div>
-            }
-
+            <ReactionPicker postId={post.id} />
             </div>
           </div>
           </Col>

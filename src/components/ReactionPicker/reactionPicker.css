@@ -1,0 +1,32 @@
+.reaction-bar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-new-reaction-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 57px;
+    width: 38px;
+}
+
+.reaction-button {
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    padding: 2px;
+    font-size: 10pt;
+    color: #cccccc;
+    text-align: center;
+}
+
+.reaction-button-image {
+    height: 32px;
+    width: 32px;
+}
+
+.selected-reaction-button {
+    box-shadow: 0 0 0 1pt #663333;
+    color: #663333;
+    font-weight: bold;
+}

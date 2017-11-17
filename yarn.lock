@@ -49,6 +49,14 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.3.tgz#e94f7e772f40e48a2dc52e57d1df38b28bf98e39"
 
+"@types/classnames@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.3.tgz#3f0ff6873da793870e20a260cada55982f38a9e5"
+
+"@types/emojione@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/emojione/-/emojione-2.2.2.tgz#0ff6fd4c9078b0725db77f5f165b0d8e5f410542"
+
 "@types/history@*":
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.6.1.tgz#0dbaef4febad5d074d06dbdfae6b027d1d701d25"
@@ -1580,6 +1588,10 @@ elliptic@^6.0.0:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
+
+emojione@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/emojione/-/emojione-3.1.2.tgz#991e30c80db4b1cf15eacb257620a7edce9c6ef4"
 
 emojis-list@^2.0.0:
   version "2.1.0"
