@@ -14,6 +14,8 @@
 .post {
   border-bottom: 1px solid #663333;
   padding: 20px;
+  box-shadow: 2px 2px 2px 2px #dddddd;
+  margin-bottom: 12px;
 }
 
 .post-author-avatar {
