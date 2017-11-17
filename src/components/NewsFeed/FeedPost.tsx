@@ -40,6 +40,8 @@ class FeedPost extends React.Component<FeedPostProps> {
     const postAuthor = users[post.userId];
     const rating = ratings.ratingMap[post.rating];
     const timestamp = moment(post.timestamp);
+    const timestampDisplay = moment().subtract(1, 'day').isBefore(timestamp) ? 
+      timestamp.fromNow() : timestamp.format('ddd, MMM Do');
     const usersWhoLikeThis = new Set(post.usersWhoLikeThis);
     
     const currentUserLikesThis = usersWhoLikeThis.has(user.id);
@@ -51,7 +53,7 @@ class FeedPost extends React.Component<FeedPostProps> {
             <div className="post-header" onClick={() => { this.props.history.push(`/users/${user.id}`); }}>
               <Image className="post-author-avatar" src={postAuthor.photoURL} circle={true}/>
               <div className="post-author-name">{postAuthor.name}</div>
-              <div className="post-timestamp pull-right" title={timestamp.toString()}>{timestamp.fromNow()}</div>
+              <div className="post-timestamp pull-right" title={timestamp.toString()}>{timestampDisplay}</div>
             </div>
             <div className="post-body">
               <Image className="post-body-rating-image" src={rating.imageSrc} />
