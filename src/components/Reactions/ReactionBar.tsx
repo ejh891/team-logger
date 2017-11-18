@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Row, Col, DropdownButton, MenuItem } from 'react-bootstrap';
 import * as classNames from 'classnames';
+import * as emojione from 'emojione';
 
 import { State } from '../../redux/models/state';
 import { User } from '../../redux/models/user';
@@ -24,20 +25,33 @@ interface ReactionBarProps extends ReactionBarOwnProps {
     reactToPost: (postId: string, emojiShortName: string) => void;
 }
 
-class ReactionBar extends React.Component<ReactionBarProps> {
+interface ReactionBarState {
+  showHackerReaction: boolean;
+  hackerInput: string;
+}
+
+class ReactionBar extends React.Component<ReactionBarProps, ReactionBarState> {
   availableEmojis: string[];
 
   constructor(props: ReactionBarProps) {
     super(props);
     
+    this.state = {
+      showHackerReaction: false,
+      hackerInput: ''
+    };
+
     this.availableEmojis = [
       ':joy:',
       ':heart:',
       ':tada:',
       ':fearful:',
       ':dumpling:',
-      ':poop:'
+      ':man_mage_tone1:'
     ];
+
+    this.hackerReactionOnKeyUp = this.hackerReactionOnKeyUp.bind(this);
+    this.hackerReactionOnChange = this.hackerReactionOnChange.bind(this);
   }
 
   render() {
@@ -58,7 +72,13 @@ class ReactionBar extends React.Component<ReactionBarProps> {
                     className="reaction-menu-item"
                     key={shortName}
                     eventKey={shortName}
-                    onClick={() => { this.props.reactToPost(this.props.post.id, shortName); }}
+                    onClick={() => {
+                      if (shortName === ':man_mage_tone1:') {
+                        this.setState({ showHackerReaction: true });
+                      } else {
+                        this.props.reactToPost(this.props.post.id, shortName);
+                      }
+                    }}
                   >
                     <Emoji emojiShortName={shortName} />
                   </MenuItem>
@@ -78,8 +98,31 @@ class ReactionBar extends React.Component<ReactionBarProps> {
             </div>
           </div>
         </Col>
+        {this.state.showHackerReaction && 
+          <Col xs={12}>
+            <input 
+              className="hacker-reaction"
+              type="text"
+              onKeyUp={this.hackerReactionOnKeyUp}
+              onChange={this.hackerReactionOnChange}
+            />
+          </Col>
+        }
       </Row>
     );
+  }
+
+  hackerReactionOnKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      if (emojione.shortnameToImage(this.state.hackerInput) !== this.state.hackerInput) {
+        this.props.reactToPost(this.props.post.id, this.state.hackerInput);
+      }
+      this.setState({ showHackerReaction: false });
+    }
+  }
+
+  hackerReactionOnChange(event: React.FormEvent<HTMLInputElement>) {
+    this.setState({ hackerInput: event.currentTarget.value });
   }
 }
 
