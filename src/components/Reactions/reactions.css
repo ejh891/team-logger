@@ -1,6 +1,12 @@
 .reaction-bar {
     display: flex;
-    justify-content: space-between;
+}
+
+.reactions {
+    display: flex;
+    justify-content: flex-start;
+    white-space: nowrap;
+    overflow-x: scroll;
 }
 
 .add-new-reaction-button {
@@ -11,7 +17,12 @@
     width: 38px;
 }
 
+.reaction-menu-item {
+    display: inline-block;
+}
+
 .reaction-button {
+    margin-right: 8px;
     border-radius: 4px;
     border: 1px solid #cccccc;
     padding: 2px;
@@ -20,13 +31,18 @@
     text-align: center;
 }
 
-.reaction-button-image {
+.reaction-emoji-image {
     height: 32px;
     width: 32px;
 }
 
 .selected-reaction-button {
-    box-shadow: 0 0 0 1pt #663333;
+    box-shadow: 0 0 0 1pt #663333 inset;
     color: #663333;
     font-weight: bold;
+}
+
+/* Override Bootstrap style */
+.dropdown-menu {
+    min-width: 218px;
 }

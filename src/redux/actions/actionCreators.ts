@@ -145,8 +145,10 @@ export const subscribeToPosts: ActionCreator<ThunkAction<void, State, void>> =
         const posts = [];
         for (let postId in postMap) {
           if (postMap.hasOwnProperty(postId)) {
-            postMap[postId].id = postId; // set the firebase key as the id of this post
-            posts.push(postMap[postId]);
+            const post = postMap[postId];
+            post.id = postId; // set the firebase key as the id of this post
+            
+            posts.push(post);
           }
         }
 
@@ -282,8 +284,8 @@ export const submitPost: ActionCreator<ThunkAction<void, State, void>> =
     };        
   };
 
-export const likePost: ActionCreator<ThunkAction<void, State, void>> =
-  (postId: string) => {
+export const reactToPost: ActionCreator<ThunkAction<void, State, void>> =
+  (postId: string, emojiShortName: string) => {
     return (dispatch: Dispatch<State>, getState: () => State) => {
       const state = getState();
       if (state === null || state.user === null) {
@@ -295,15 +297,15 @@ export const likePost: ActionCreator<ThunkAction<void, State, void>> =
       const postRef = firebaseDatabase().ref(`posts/${postId}`);
 
       postRef.transaction(function(existingState: RatifiedPostBody) {
-        const currentUsersWhoLikeThis = existingState.usersWhoLikeThis || [];
-        const usersWhoLikeThis = [...currentUsersWhoLikeThis, currentUserId];
+        const reactionMap = existingState.reactionMap || {};
+        reactionMap[currentUserId] = emojiShortName;
   
-        return { ...existingState, usersWhoLikeThis };
+        return { ...existingState, reactionMap };
       });
     };
   };
 
-export const unlikePost: ActionCreator<ThunkAction<void, State, void>> =
+export const unreactToPost: ActionCreator<ThunkAction<void, State, void>> =
   (postId: string) => {
     return (dispatch: Dispatch<State>, getState: () => State) => {
       const state = getState();
@@ -316,10 +318,10 @@ export const unlikePost: ActionCreator<ThunkAction<void, State, void>> =
       const postRef = firebaseDatabase().ref(`posts/${postId}`);
 
       postRef.transaction(function(existingState: RatifiedPostBody) {
-        const currentUsersWhoLikeThis = existingState.usersWhoLikeThis || [];
-        const usersWhoLikeThis = currentUsersWhoLikeThis.filter(userId => userId !== currentUserId);
-  
-        return { ...existingState, usersWhoLikeThis };
+        const reactionMap = existingState.reactionMap || {};
+        delete reactionMap[currentUserId];
+
+        return { ...existingState, reactionMap };
       });
     };
   };

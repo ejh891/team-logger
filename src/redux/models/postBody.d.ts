@@ -7,5 +7,5 @@ export interface DraftPostBody {
 
 export interface RatifiedPostBody extends DraftPostBody {
     id: string;
-    usersWhoLikeThis: string[]
+    reactionMap: {[key: string]: string};
 }

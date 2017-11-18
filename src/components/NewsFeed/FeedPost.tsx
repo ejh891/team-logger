@@ -8,11 +8,10 @@ import * as moment from 'moment';
 import { State } from '../../redux/models/state';
 import { User } from '../../redux/models/user';
 import { RatifiedPostBody } from '../../redux/models/postBody';
-import { likePost, unlikePost } from '../../redux/actions/actionCreators';
 
 import * as ratings from '../../maps/ratings';
 
-import ReactionPicker from '../ReactionPicker/ReactionPicker';
+import ReactionBar from '../Reactions/ReactionBar';
 
 import './newsFeed.css';
 
@@ -21,16 +20,11 @@ interface FeedPostProps extends RouteComponentProps<{}> {
   posts: RatifiedPostBody[];
   post: RatifiedPostBody;
   users: {[key: string]: User};
-  likePost: (postId: string) => void;
-  unlikePost: (postId: string) => void;
 }
 
 class FeedPost extends React.Component<FeedPostProps> {
   constructor(props: FeedPostProps) {
     super(props);
-
-    this.likePost = this.likePost.bind(this);
-    this.unlikePost = this.unlikePost.bind(this);
   }
 
   render() {
@@ -63,20 +57,12 @@ class FeedPost extends React.Component<FeedPostProps> {
               <div className="post-body-comment">{post.comment}</div>
             </div>
             <div className="post-actions">
-            <ReactionPicker postId={post.id} />
+            <ReactionBar post={post} />
             </div>
           </div>
           </Col>
       </Row>
     );
-  }
-
-  likePost() {
-    this.props.likePost(this.props.post.id);
-  }
-
-  unlikePost() {
-    this.props.unlikePost(this.props.post.id);
   }
 }
 
@@ -90,14 +76,7 @@ const mapStateToProps = (state: State, ownProps: {post: RatifiedPostBody}) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<State>) => {
-    return {
-      likePost: (postId: string) => {
-        dispatch(likePost(postId));
-      },
-      unlikePost: (postId: string) => {
-        dispatch(unlikePost(postId));
-      }
-    };
+    return {};
 };
 
 export default withRouter<{post: RatifiedPostBody}>(connect(mapStateToProps, mapDispatchToProps)(FeedPost));
