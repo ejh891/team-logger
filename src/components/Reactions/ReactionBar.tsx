@@ -34,8 +34,9 @@ class ReactionBar extends React.Component<ReactionBarProps> {
       ':joy:',
       ':heart:',
       ':tada:',
-      ':anguished:',
-      ':dumpling:'
+      ':fearful:',
+      ':dumpling:',
+      ':poop:'
     ];
   }
 
