@@ -1,5 +1,6 @@
 import * as React from 'react';
-import * as emojione from 'emojione';
+
+import EmojiUtil from '../../utils/emojiUtil';
 
 import './reactions.css';
 
@@ -9,28 +10,25 @@ interface EmojiProps {
 }
 
 class ReactionButton extends React.Component<EmojiProps> {
+  constructor(props: EmojiProps) {
+    super(props);
+
+    this.getSrc = this.getSrc.bind(this);
+  }
+
   render() {
     return (
       <img
         style={this.props.style}
         className="reaction-emoji-image" 
-        src={this.getImageSrcFromShortname(this.props.emojiShortName)}
+        src={this.getSrc()}
         alt={this.props.emojiShortName}
       />
     );
   }
 
-  getImageSrcFromShortname(shortname: string) {
-    const img = emojione.shortnameToImage(shortname);
-    
-    const srcRegex = new RegExp(/src="(.*)"/);
-    const match = srcRegex.exec(img);
-
-    if (match !== null && match.length >= 2) {
-      return match[1];
-    } else {
-      return '';
-    }
+  getSrc() {
+    return EmojiUtil.getImageSrcByShortName(this.props.emojiShortName);
   }
 }
 

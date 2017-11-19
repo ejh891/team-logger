@@ -12,12 +12,13 @@ import {
   Row,
 } from 'react-bootstrap';
 import * as classNames from 'classnames';
-import * as emojione from 'emojione';
 
 import { State } from '../../redux/models/state';
 import { User } from '../../redux/models/user';
 import { RatifiedPostBody } from '../../redux/models/postBody';
 import { reactToPost } from '../../redux/actions/actionCreators';
+
+import EmojiUtil from '../../utils/emojiUtil';
 
 import ReactionButton from './ReactionButton';
 import Emoji from './Emoji';
@@ -137,7 +138,7 @@ class ReactionBar extends React.Component<ReactionBarProps, ReactionBarState> {
   }
 
   submitHackerReaction() {
-      if (emojione.shortnameToImage(this.state.hackerInput) !== this.state.hackerInput) {
+      if (EmojiUtil.isValidShortName(this.state.hackerInput)) {
         this.props.reactToPost(this.props.post.id, this.state.hackerInput);
       }
       this.setState({ showHackerReaction: false });
