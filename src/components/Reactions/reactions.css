@@ -42,16 +42,24 @@
     font-weight: bold;
 }
 
-.hacker-reaction {
-    width: 100%;
-    height: 45px;
-    background-color: black;
-    color: lightgreen;
-    margin-top: 10px;
-    border: none;
-}
-
 /* Override Bootstrap style */
 .dropdown-menu {
     min-width: 218px;
+}
+
+.hacker-reaction {
+    margin-top: 15px;
+}
+
+.hacker-reaction-addon, .hacker-reaction-input, .hacker-reaction-button {
+    background-color: black;
+    color: lightgreen;
+}
+
+.hacker-reaction-addon {
+    border-right: none;
+}
+
+.hacker-reaction-input {
+    border-left: none;
 }
