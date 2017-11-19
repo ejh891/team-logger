@@ -5,12 +5,14 @@ import './reactions.css';
 
 interface EmojiProps {
   emojiShortName: string;
+  style?: {};
 }
 
 class ReactionButton extends React.Component<EmojiProps> {
   render() {
     return (
       <img
+        style={this.props.style}
         className="reaction-emoji-image" 
         src={this.getImageSrcFromShortname(this.props.emojiShortName)}
         alt={this.props.emojiShortName}

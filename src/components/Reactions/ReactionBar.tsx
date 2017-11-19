@@ -40,6 +40,7 @@ interface ReactionBarState {
 }
 
 class ReactionBar extends React.Component<ReactionBarProps, ReactionBarState> {
+  hackerEmoji: string;
   availableEmojis: string[];
 
   constructor(props: ReactionBarProps) {
@@ -50,13 +51,15 @@ class ReactionBar extends React.Component<ReactionBarProps, ReactionBarState> {
       hackerInput: ''
     };
 
+    this.hackerEmoji = ':smirk:';
+
     this.availableEmojis = [
       ':joy:',
       ':heart:',
       ':tada:',
       ':fearful:',
       ':dumpling:',
-      ':man_mage_tone1:'
+      this.hackerEmoji
     ];
 
     this.hackerReactionButtonOnClick = this.hackerReactionButtonOnClick.bind(this);
@@ -84,7 +87,7 @@ class ReactionBar extends React.Component<ReactionBarProps, ReactionBarState> {
                     key={shortName}
                     eventKey={shortName}
                     onClick={() => {
-                      if (shortName === ':man_mage_tone1:') {
+                      if (shortName === this.hackerEmoji) {
                         this.setState({ showHackerReaction: true });
                       } else {
                         this.props.reactToPost(this.props.post.id, shortName);
@@ -113,7 +116,9 @@ class ReactionBar extends React.Component<ReactionBarProps, ReactionBarState> {
           <Col xs={12}>
             <FormGroup className="hacker-reaction">
               <InputGroup bsSize="large">
-                <InputGroup.Addon className="hacker-reaction-addon">></InputGroup.Addon>
+                <InputGroup.Addon className="hacker-reaction-addon">
+                  <Emoji style={{ height: '22px', width: '22px' }} emojiShortName={this.hackerEmoji} />
+                </InputGroup.Addon>
                 <FormControl
                   className="hacker-reaction-input"
                   type="text"
