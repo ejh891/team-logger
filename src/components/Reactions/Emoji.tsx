@@ -28,7 +28,7 @@ class ReactionButton extends React.Component<EmojiProps> {
   }
 
   getSrc() {
-    return EmojiUtil.getImageSrcByShortName(this.props.emojiShortName);
+    return EmojiUtil.getImageSrcByUnicodeOrShortName(this.props.emojiShortName);
   }
 }
 

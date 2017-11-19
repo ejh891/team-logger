@@ -138,8 +138,9 @@ class ReactionBar extends React.Component<ReactionBarProps, ReactionBarState> {
   }
 
   submitHackerReaction() {
-      if (EmojiUtil.isValidShortName(this.state.hackerInput)) {
-        this.props.reactToPost(this.props.post.id, this.state.hackerInput);
+      if (EmojiUtil.isValidUnicodeOrShortName(this.state.hackerInput)) {
+        const shortName = EmojiUtil.convertUnicodeOrShortNameToShortName(this.state.hackerInput);
+        this.props.reactToPost(this.props.post.id, shortName);
       }
       this.setState({ showHackerReaction: false });
     }
