@@ -63,3 +63,8 @@ export interface SetUsersSuccessAction {
   type: actionTypes.SET_USERS_SUCCESS;
   users: {[key: string]: User};
 }
+
+export interface SetUsersSuccessAction {
+  type: actionTypes.SET_USERS_SUCCESS;
+  users: {[key: string]: User};
+}

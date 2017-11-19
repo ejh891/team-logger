@@ -42,9 +42,9 @@ export default (state: State = defaultState, action: AnyAction) => {
     case actionTypes.SET_POSTS_SUCCESS:
       return {
         ...state,
-        posts: action.posts
+        posts: action.posts,
       };
-      case actionTypes.SET_USERS_SUCCESS:
+    case actionTypes.SET_USERS_SUCCESS:
       return {
         ...state,
         users: action.users

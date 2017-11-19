@@ -17,7 +17,7 @@ import UserProfile from './components/UserProfile/UserProfile';
 import MyProfile from './components/MyProfile/MyProfile';
 import CreatePost from './components/CreatePost/CreatePost';
 
-import { observeAuthState, subscribeToPosts, subscribeToUsers } from './redux/actions/actionCreators';
+import { observeAuthState, subscribeToUsers } from './redux/actions/actionCreators';
 
 import './index.css';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -29,7 +29,6 @@ injectTapEventPlugin();
 const store = getStore(defaultState);
 
 store.dispatch(observeAuthState()); // listen for auth-state changes
-store.dispatch(subscribeToPosts()); // listen for posts
 store.dispatch(subscribeToUsers()); // listen for new users
 
 ReactDOM.render(

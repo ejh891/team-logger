@@ -21,6 +21,7 @@
     "react-tap-event-plugin": "^3.0.2",
     "react-toastify": "^2.2.0",
     "react-transition-group": "^2.2.1",
+    "react-visibility-sensor": "^3.11.0",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0"

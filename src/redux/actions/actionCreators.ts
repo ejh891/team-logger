@@ -132,17 +132,25 @@ export const observeAuthState: ActionCreator<ThunkAction<void, State, void>> =
     };
   };
 
-export const subscribeToPosts: ActionCreator<ThunkAction<void, State, void>> =
+export const loadSomePosts: ActionCreator<ThunkAction<void, State, void>> =
   () => {
-    return (dispatch: Dispatch<State>) => {
+    return (dispatch: Dispatch<State>, getState: () => State) => {
+      const stateSnapshot = getState();
+      
+      const numPostsToLoad = 5;
+
+      const currentNumPosts = stateSnapshot.posts.length;
+
       const postsRef = firebaseDatabase().ref('posts');
       
-      postsRef.on('value', (snapshot) => {
+      postsRef.off(); // remove any current listeners
+      
+      postsRef.orderByKey().limitToLast(currentNumPosts + numPostsToLoad).on('value', (snapshot) => {
         if (snapshot === null) { return; }
         
         const postMap = snapshot.val();
-
-        const posts = [];
+  
+        let posts = [];
         for (let postId in postMap) {
           if (postMap.hasOwnProperty(postId)) {
             const post = postMap[postId];
@@ -151,15 +159,14 @@ export const subscribeToPosts: ActionCreator<ThunkAction<void, State, void>> =
             posts.push(post);
           }
         }
-
-        posts.sort((a: RatifiedPostBody, b: RatifiedPostBody) => {
-          return b.timestamp - a.timestamp;
-        });
-
+  
+        posts = posts.reverse();
+  
         dispatch(setPostsSuccess(posts));
-      });
-    };
+      }
+    );
   };
+};
 
 export const subscribeToUsers: ActionCreator<ThunkAction<void, State, void>> =
   () => {
