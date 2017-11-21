@@ -16,7 +16,9 @@ export type AnyAction =
   SetUserAuthStateChangingAction |
   UpdateUserProfileSuccessAction |
   SetPostsSuccessAction |
-  SetUsersSuccessAction;
+  SetUsersSuccessAction |
+  OptimisticReactToPostAction |
+  OptimisticUnreactToPostAction;
 
 /**********************************************************************************************************************
  * ActionInterfaces - declare actionType and payloads for each action
@@ -67,4 +69,15 @@ export interface SetUsersSuccessAction {
 export interface SetUsersSuccessAction {
   type: actionTypes.SET_USERS_SUCCESS;
   users: {[key: string]: User};
+}
+
+export interface OptimisticReactToPostAction {
+  type: actionTypes.OPTIMISTIC_REACT_TO_POST;
+  postId: string;
+  emojiShortName: string;
+}
+
+export interface OptimisticUnreactToPostAction {
+  type: actionTypes.OPTIMISTIC_UNREACT_TO_POST;
+  postId: string;
 }

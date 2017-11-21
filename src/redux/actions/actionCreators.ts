@@ -114,6 +114,23 @@ export const setUsersSuccess: ActionCreator<actions.SetUsersSuccessAction> =
     };
   };
 
+export const optimisticReactToPost: ActionCreator<actions.OptimisticReactToPostAction> =
+  (postId: string, emojiShortName: string) => {
+    return {
+      type: actionTypes.OPTIMISTIC_REACT_TO_POST,
+      postId,
+      emojiShortName
+    };
+  };
+
+export const optimisticUnreactToPost: ActionCreator<actions.OptimisticUnreactToPostAction> =
+  (postId: string, emojiShortName: string) => {
+    return {
+      type: actionTypes.OPTIMISTIC_UNREACT_TO_POST,
+      postId
+    };
+  };
+
 /**********************************************************************************************************************
  * ThunkActions - actions which typically dispatch a normal action as a response to some async call
  **********************************************************************************************************************/
@@ -294,6 +311,8 @@ export const submitPost: ActionCreator<ThunkAction<void, State, void>> =
 export const reactToPost: ActionCreator<ThunkAction<void, State, void>> =
   (postId: string, emojiShortName: string) => {
     return (dispatch: Dispatch<State>, getState: () => State) => {
+      dispatch(optimisticReactToPost(postId, emojiShortName));
+
       const state = getState();
       if (state === null || state.user === null) {
         toast.error('Whoops! Something went wrong');
@@ -315,6 +334,8 @@ export const reactToPost: ActionCreator<ThunkAction<void, State, void>> =
 export const unreactToPost: ActionCreator<ThunkAction<void, State, void>> =
   (postId: string) => {
     return (dispatch: Dispatch<State>, getState: () => State) => {
+      dispatch(optimisticUnreactToPost(postId));
+
       const state = getState();
       if (state === null || state.user === null) {
         toast.error('Whoops! Something went wrong');

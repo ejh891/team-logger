@@ -11,6 +11,8 @@ export enum actionTypes {
   UPDATE_USER_PROFILE_SUCCESS = 'UPDATE_USER_PROFILE_SUCCESS',
   SET_POSTS_SUCCESS = 'SET_POSTS_SUCCESS',
   SET_USERS_SUCCESS = 'SET_USERS_SUCCESS',
+  OPTIMISTIC_REACT_TO_POST = 'OPTIMISTIC_REACT_TO_POST',
+  OPTIMISTIC_UNREACT_TO_POST = 'OPTIMISTIC_UNREACT_TO_POST',
   
   // system action is never dispatched, but it forces us to add a default case to our reducers
   // this is important so that redux and middleware can dispatch their own actions and we'll handle it gracefully

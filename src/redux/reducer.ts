@@ -49,6 +49,30 @@ export default (state: State = defaultState, action: AnyAction) => {
         ...state,
         users: action.users
       };
+    case actionTypes.OPTIMISTIC_REACT_TO_POST:
+      if (state.user === null) { // todo: find a better way to assert that the user will exist
+        throw new Error('User is null');
+      }
+      const targetPosts = state.posts.filter(post => post.id === action.postId);
+      if (targetPosts.length !== 1) { 
+        throw new Error(`Expected exactly one matching post. Got ${targetPosts.length}`);
+      }
+
+      const targetPostClone = Object.assign({}, targetPosts[0]);
+      targetPostClone.reactionMap = Object.assign(
+        {},
+        targetPostClone.reactionMap,
+        {[state.user.id]: action.emojiShortName}
+      );
+
+      const targetPostIndex = state.posts.indexOf(targetPosts[0]);
+      const postsBeforeTarget = state.posts.slice(0, targetPostIndex);
+      const postsAfterTarget = state.posts.slice(targetPostIndex + 1, state.posts.length);
+
+      return {
+        ...state,
+        posts: [...postsBeforeTarget, targetPostClone, ...postsAfterTarget]
+      };
     default:
       return state;
   }
