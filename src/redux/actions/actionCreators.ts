@@ -313,21 +313,24 @@ export const reactToPost: ActionCreator<ThunkAction<void, State, void>> =
     return (dispatch: Dispatch<State>, getState: () => State) => {
       dispatch(optimisticReactToPost(postId, emojiShortName));
 
-      const state = getState();
-      if (state === null || state.user === null) {
-        toast.error('Whoops! Something went wrong');
-        throw new Error('Could not determine user in order to like post');
-      }
-
-      const currentUserId = state.user.id;
-      const postRef = firebaseDatabase().ref(`posts/${postId}`);
-
-      postRef.transaction(function(existingState: RatifiedPostBody) {
-        const reactionMap = existingState.reactionMap || {};
-        reactionMap[currentUserId] = emojiShortName;
+      setTimeout(() => { // let the UI update before continuing
+        const state = getState();
+        if (state === null || state.user === null) {
+          toast.error('Whoops! Something went wrong');
+          throw new Error('Could not determine user in order to like post');
+        }
   
-        return { ...existingState, reactionMap };
-      });
+        const currentUserId = state.user.id;
+        const postRef = firebaseDatabase().ref(`posts/${postId}`);
+  
+        postRef.transaction(function(existingState: RatifiedPostBody) {
+          const reactionMap = existingState.reactionMap || {};
+          reactionMap[currentUserId] = emojiShortName;
+    
+          return { ...existingState, reactionMap };
+        });
+      // tslint:disable-next-line:align
+      }, 0);
     };
   };
 
@@ -336,20 +339,24 @@ export const unreactToPost: ActionCreator<ThunkAction<void, State, void>> =
     return (dispatch: Dispatch<State>, getState: () => State) => {
       dispatch(optimisticUnreactToPost(postId));
 
-      const state = getState();
-      if (state === null || state.user === null) {
-        toast.error('Whoops! Something went wrong');
-        throw new Error('Could not determine user in order to like post');
-      }
+      setTimeout(() => { // let the UI update before continuing
+        
+        const state = getState();
+        if (state === null || state.user === null) {
+          toast.error('Whoops! Something went wrong');
+          throw new Error('Could not determine user in order to like post');
+        }
 
-      const currentUserId = state.user.id;
-      const postRef = firebaseDatabase().ref(`posts/${postId}`);
+        const currentUserId = state.user.id;
+        const postRef = firebaseDatabase().ref(`posts/${postId}`);
 
-      postRef.transaction(function(existingState: RatifiedPostBody) {
-        const reactionMap = existingState.reactionMap || {};
-        delete reactionMap[currentUserId];
+        postRef.transaction(function(existingState: RatifiedPostBody) {
+          const reactionMap = existingState.reactionMap || {};
+          delete reactionMap[currentUserId];
 
-        return { ...existingState, reactionMap };
-      });
+          return { ...existingState, reactionMap };
+        });
+      // tslint:disable-next-line:align
+      }, 0);
     };
   };

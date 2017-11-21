@@ -53,6 +53,7 @@ export default (state: State = defaultState, action: AnyAction) => {
       if (state.user === null) { // todo: find a better way to assert that the user will exist
         throw new Error('User is null');
       }
+
       const targetPosts = state.posts.filter(post => post.id === action.postId);
       if (targetPosts.length !== 1) { 
         throw new Error(`Expected exactly one matching post. Got ${targetPosts.length}`);
@@ -72,6 +73,27 @@ export default (state: State = defaultState, action: AnyAction) => {
       return {
         ...state,
         posts: [...postsBeforeTarget, targetPostClone, ...postsAfterTarget]
+      };
+    case actionTypes.OPTIMISTIC_REACT_TO_POST:
+      if (state.user === null) { // todo: find a better way to assert that the user will exist
+        throw new Error('User is null');
+      }
+
+      const outpTargetPosts = state.posts.filter(post => post.id === action.postId);
+      if (outpTargetPosts.length !== 1) { 
+        throw new Error(`Expected exactly one matching post. Got ${outpTargetPosts.length}`);
+      }
+
+      const outpTargetPostClone = Object.assign({}, outpTargetPosts[0]);
+      delete outpTargetPostClone.reactionMap[state.user.id];
+
+      const outpTargetPostIndex = state.posts.indexOf(outpTargetPosts[0]);
+      const outpPostsBeforeTarget = state.posts.slice(0, outpTargetPostIndex);
+      const outpPostsAfterTarget = state.posts.slice(outpTargetPostIndex + 1, state.posts.length);
+
+      return {
+        ...state,
+        posts: [...outpPostsBeforeTarget, outpTargetPostClone, ...outpPostsAfterTarget]
       };
     default:
       return state;
