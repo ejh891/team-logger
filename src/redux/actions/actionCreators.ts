@@ -21,6 +21,8 @@ import { FirebaseError } from '../models/firebaseError';
 import { DraftPostBody, RatifiedPostBody } from '../models/postBody';
 import { Profile } from '../models/profile';
 
+import UserInterfaceUtil from '../../utils/userInterfaceUtil';
+
 import { firebaseAuth, firebaseFacebookAuthProvider, firebaseDatabase } from '../../firebase/firebaseProvider';
 import { authErrorCodes } from '../../enums/authErrorCodes';
 
@@ -313,7 +315,7 @@ export const reactToPost: ActionCreator<ThunkAction<void, State, void>> =
     return (dispatch: Dispatch<State>, getState: () => State) => {
       dispatch(optimisticReactToPost(postId, emojiShortName));
 
-      setTimeout(() => { // let the UI update before continuing
+      UserInterfaceUtil.letUserInterfaceUpdate().then(() => {
         const state = getState();
         if (state === null || state.user === null) {
           toast.error('Whoops! Something went wrong');
@@ -322,15 +324,14 @@ export const reactToPost: ActionCreator<ThunkAction<void, State, void>> =
   
         const currentUserId = state.user.id;
         const postRef = firebaseDatabase().ref(`posts/${postId}`);
-  
+
         postRef.transaction(function(existingState: RatifiedPostBody) {
           const reactionMap = existingState.reactionMap || {};
           reactionMap[currentUserId] = emojiShortName;
     
           return { ...existingState, reactionMap };
         });
-      // tslint:disable-next-line:align
-      }, 0);
+      });
     };
   };
 
@@ -339,8 +340,7 @@ export const unreactToPost: ActionCreator<ThunkAction<void, State, void>> =
     return (dispatch: Dispatch<State>, getState: () => State) => {
       dispatch(optimisticUnreactToPost(postId));
 
-      setTimeout(() => { // let the UI update before continuing
-        
+      UserInterfaceUtil.letUserInterfaceUpdate().then(() => {
         const state = getState();
         if (state === null || state.user === null) {
           toast.error('Whoops! Something went wrong');
@@ -356,7 +356,6 @@ export const unreactToPost: ActionCreator<ThunkAction<void, State, void>> =
 
           return { ...existingState, reactionMap };
         });
-      // tslint:disable-next-line:align
-      }, 0);
+      });
     };
   };
