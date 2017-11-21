@@ -12,6 +12,7 @@
 }
 
 .post-header {
+  display: flex;
   padding-bottom: 10px;
 }
 
@@ -21,14 +22,18 @@
   margin-right: 10px;
 }
 
-.post-author-name {
+.post-author-name-and-timestamp {
   display: inline-block;
+}
+
+.post-author-name {
   font-size: 20px;
 }
 
 .post-timestamp {
-  display: inline-block;
   color: #aaaaaa;
+  position: relative;
+  top: -6px;
 }
 
 .post-body-rating-image {

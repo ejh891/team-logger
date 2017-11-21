@@ -40,7 +40,7 @@ class FeedPost extends React.Component<FeedPostProps> {
     const postAuthor = users[post.userId];
     const rating = ratings.ratingMap[post.rating];
     const timestamp = moment(post.timestamp);
-    const timestampDisplay = moment().subtract(1, 'day').isBefore(timestamp) ? 
+    const timestampDisplay = moment().subtract(2, 'days').isBefore(timestamp) ? 
       timestamp.fromNow() : timestamp.format('ddd, MMM Do');
     
     return (
@@ -49,8 +49,10 @@ class FeedPost extends React.Component<FeedPostProps> {
           <div className="post">
             <div className="post-header" onClick={() => { this.props.history.push(`/users/${postAuthor.id}`); }}>
               <Image className="post-author-avatar" src={postAuthor.photoURL} circle={true}/>
-              <div className="post-author-name">{postAuthor.name}</div>
-              <div className="post-timestamp pull-right" title={timestamp.toString()}>{timestampDisplay}</div>
+              <div className="post-author-name-and-timestamp">
+                <div className="post-author-name">{postAuthor.name}</div>
+                <div className="post-timestamp" title={timestamp.toString()}>{timestampDisplay}</div>
+              </div>
             </div>
             <div className="post-body">
               <Image className="post-body-rating-image" src={rating.imageSrc} />
