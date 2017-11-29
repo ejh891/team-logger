@@ -9,7 +9,7 @@ import { User } from '../../redux/models/user';
 import { RatifiedPostBody } from '../../redux/models/postBody';
 
 import Header from '../Header/Header';
-import FeedPost from '../NewsFeed/FeedPost';
+import UserFeed from './UserFeed';
 
 interface UserProfileProps extends RouteComponentProps<{ id: string }> {
   users: {[key: string]: User};
@@ -24,7 +24,6 @@ class UserProfile extends React.Component<UserProfileProps> {
     const { id } = this.props.match.params;
 
     const user = this.props.users[id];
-    const userPosts = this.props.posts.filter((post) => post.userId === user.id);
 
     return (
       <Grid>
@@ -44,8 +43,7 @@ class UserProfile extends React.Component<UserProfileProps> {
             }
           </Col>
         </Row>
-        {userPosts.map((post, index) => <FeedPost key={index} post={post} />)}
-
+        <UserFeed userId={id} />
       </Grid>
     );
   }

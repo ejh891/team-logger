@@ -16,6 +16,7 @@ export type AnyAction =
   SetUserAuthStateChangingAction |
   UpdateUserProfileSuccessAction |
   SetPostsSuccessAction |
+  SetUserPostsSuccessAction |
   SetUsersSuccessAction |
   OptimisticReactToPostAction |
   OptimisticUnreactToPostAction;
@@ -59,6 +60,11 @@ export interface UpdateUserProfileSuccessAction {
 export interface SetPostsSuccessAction {
   type: actionTypes.SET_POSTS_SUCCESS;
   posts: RatifiedPostBody[];
+}
+
+export interface SetUserPostsSuccessAction {
+  type: actionTypes.SET_USER_POSTS_SUCCESS;
+  userPosts: RatifiedPostBody[];
 }
 
 export interface SetUsersSuccessAction {

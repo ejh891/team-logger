@@ -8,7 +8,7 @@ export interface State {
     setUserError: NullableFirebaseError;
     createUserError: NullableFirebaseError;
     posts: RatifiedPostBody[];
-    oldestPostLoaded: string | null;
+    userPosts: RatifiedPostBody[];
     users: {[key: string]: User};
 }
 
@@ -18,6 +18,6 @@ export const defaultState: State = {
   setUserError: null,
   createUserError: null,
   posts: [],
+  userPosts: [],
   users: {},
-  oldestPostLoaded: null,
 };

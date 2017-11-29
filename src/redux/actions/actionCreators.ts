@@ -108,6 +108,14 @@ export const setPostsSuccess: ActionCreator<actions.SetPostsSuccessAction> =
     };
   };
 
+export const setUserPostsSuccess: ActionCreator<actions.SetUserPostsSuccessAction> = 
+  (userPosts: RatifiedPostBody[]) => {    
+    return {
+      type: actionTypes.SET_USER_POSTS_SUCCESS,
+      userPosts
+    };
+  };
+
 export const setUsersSuccess: ActionCreator<actions.SetUsersSuccessAction> = 
   (users: {[key: string]: User}) => {    
     return {
@@ -186,6 +194,51 @@ export const loadSomePosts: ActionCreator<ThunkAction<void, State, void>> =
     );
   };
 };
+
+export const loadSomeUserPosts: ActionCreator<ThunkAction<void, State, void>> =
+  (userId) => {
+    return (dispatch: Dispatch<State>, getState: () => State) => {
+      const stateSnapshot = getState();
+
+      if (stateSnapshot === null || stateSnapshot.user === null) {
+        toast.error('Whoops! Something went wrong');
+        throw new Error('Could not determine user in order get user\'s posts');
+      }
+
+      const currentNumPosts = stateSnapshot.userPosts.length;
+
+      const numPostsToLoad = 5;
+      
+      const postsRef = firebaseDatabase().ref('posts');
+      
+      postsRef.off(); // remove any current listeners
+      
+      postsRef
+        .orderByChild('userId')
+        .equalTo(userId)
+        .limitToLast(currentNumPosts + numPostsToLoad)
+        .on('value', (snapshot) => {
+          if (snapshot === null) { return; }
+          
+          const postMap = snapshot.val();
+    
+          let posts = [];
+          for (let postId in postMap) {
+            if (postMap.hasOwnProperty(postId)) {
+              const post = postMap[postId];
+              post.id = postId; // set the firebase key as the id of this post
+              
+              posts.push(post);
+            }
+          }
+    
+          posts = posts.reverse();
+    
+          dispatch(setUserPostsSuccess(posts));
+        }
+      );
+    };
+  };
 
 export const subscribeToUsers: ActionCreator<ThunkAction<void, State, void>> =
   () => {
