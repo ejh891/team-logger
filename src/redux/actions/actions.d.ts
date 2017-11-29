@@ -64,6 +64,7 @@ export interface SetPostsSuccessAction {
 
 export interface SetUserPostsSuccessAction {
   type: actionTypes.SET_USER_POSTS_SUCCESS;
+  userId: string,
   userPosts: RatifiedPostBody[];
 }
 

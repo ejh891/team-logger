@@ -8,8 +8,8 @@ export interface State {
     setUserError: NullableFirebaseError;
     createUserError: NullableFirebaseError;
     posts: RatifiedPostBody[];
-    userPosts: RatifiedPostBody[];
-    users: {[key: string]: User};
+    postsByUserMap: Map<string, RatifiedPostBody[]>;
+    users: {[key: string]: User}; // probably should be a map
 }
 
 export const defaultState: State = {
@@ -18,6 +18,6 @@ export const defaultState: State = {
   setUserError: null,
   createUserError: null,
   posts: [],
-  userPosts: [],
+  postsByUserMap: new Map(),
   users: {},
 };

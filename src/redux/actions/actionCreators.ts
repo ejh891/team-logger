@@ -24,6 +24,7 @@ import { Profile } from '../models/profile';
 import UserInterfaceUtil from '../../utils/userInterfaceUtil';
 
 import { firebaseAuth, firebaseFacebookAuthProvider, firebaseDatabase } from '../../firebase/firebaseProvider';
+import FirebaseSubscriptionManager from '../../firebase/subscriptionManager';
 import { authErrorCodes } from '../../enums/authErrorCodes';
 
 const defaultAvatarSrc = require('../../images/logo.png');
@@ -109,9 +110,10 @@ export const setPostsSuccess: ActionCreator<actions.SetPostsSuccessAction> =
   };
 
 export const setUserPostsSuccess: ActionCreator<actions.SetUserPostsSuccessAction> = 
-  (userPosts: RatifiedPostBody[]) => {    
+  (userId: string, userPosts: RatifiedPostBody[]) => {    
     return {
       type: actionTypes.SET_USER_POSTS_SUCCESS,
+      userId,
       userPosts
     };
   };
@@ -170,28 +172,38 @@ export const loadSomePosts: ActionCreator<ThunkAction<void, State, void>> =
 
       const postsRef = firebaseDatabase().ref('posts');
       
-      postsRef.off(); // remove any current listeners
-      
-      postsRef.orderByKey().limitToLast(currentNumPosts + numPostsToLoad).on('value', (snapshot) => {
-        if (snapshot === null) { return; }
-        
-        const postMap = snapshot.val();
-  
-        let posts = [];
-        for (let postId in postMap) {
-          if (postMap.hasOwnProperty(postId)) {
-            const post = postMap[postId];
-            post.id = postId; // set the firebase key as the id of this post
-            
-            posts.push(post);
-          }
-        }
-  
-        posts = posts.reverse();
-  
-        dispatch(setPostsSuccess(posts));
+      const currentHandler = FirebaseSubscriptionManager.getHandler('newsfeed');
+
+      if (currentHandler !== undefined) {
+        postsRef.off('value', currentHandler);
       }
-    );
+      
+      FirebaseSubscriptionManager.subscribe(
+        'newsfeed',
+        postsRef
+          .orderByKey()
+          .limitToLast(currentNumPosts + numPostsToLoad)
+          .on('value', (snapshot) => {
+            if (snapshot === null) { return; }
+            
+            const postMap = snapshot.val();
+      
+            let posts = [];
+            for (let postId in postMap) {
+              if (postMap.hasOwnProperty(postId)) {
+                const post = postMap[postId];
+                post.id = postId; // set the firebase key as the id of this post
+                
+                posts.push(post);
+              }
+            }
+      
+            posts = posts.reverse();
+      
+            dispatch(setPostsSuccess(posts));
+          }
+        )
+      );
   };
 };
 
@@ -205,37 +217,46 @@ export const loadSomeUserPosts: ActionCreator<ThunkAction<void, State, void>> =
         throw new Error('Could not determine user in order get user\'s posts');
       }
 
-      const currentNumPosts = stateSnapshot.userPosts.length;
+      const currentPostsByUser = stateSnapshot.postsByUserMap.get(userId) || [];
+      const currentNumPosts = currentPostsByUser.length;
 
       const numPostsToLoad = 5;
       
       const postsRef = firebaseDatabase().ref('posts');
       
-      postsRef.off(); // remove any current listeners
+      const currentHandler = FirebaseSubscriptionManager.getHandler(`user-posts-${userId}`);
       
-      postsRef
-        .orderByChild('userId')
-        .equalTo(userId)
-        .limitToLast(currentNumPosts + numPostsToLoad)
-        .on('value', (snapshot) => {
-          if (snapshot === null) { return; }
-          
-          const postMap = snapshot.val();
-    
-          let posts = [];
-          for (let postId in postMap) {
-            if (postMap.hasOwnProperty(postId)) {
-              const post = postMap[postId];
-              post.id = postId; // set the firebase key as the id of this post
-              
-              posts.push(post);
+      if (currentHandler !== undefined) {
+        postsRef.off('value', currentHandler);
+        // maybe unsubscribe? But the subscription is just reset on the next line which overwrites...
+      }
+
+      FirebaseSubscriptionManager.subscribe(
+        `user-posts-${userId}`,
+        postsRef
+          .orderByChild('userId')
+          .equalTo(userId)
+          .limitToLast(currentNumPosts + numPostsToLoad)
+          .on('value', (snapshot) => {
+            if (snapshot === null) { return; }
+            
+            const postMap = snapshot.val();
+      
+            let posts = [];
+            for (let postId in postMap) {
+              if (postMap.hasOwnProperty(postId)) {
+                const post = postMap[postId];
+                post.id = postId; // set the firebase key as the id of this post
+                
+                posts.push(post);
+              }
             }
+      
+            posts = posts.reverse();
+      
+            dispatch(setUserPostsSuccess(userId, posts));
           }
-    
-          posts = posts.reverse();
-    
-          dispatch(setUserPostsSuccess(posts));
-        }
+        )
       );
     };
   };

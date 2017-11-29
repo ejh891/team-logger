@@ -45,9 +45,12 @@ export default (state: State = defaultState, action: AnyAction) => {
         posts: action.posts,
       };
     case actionTypes.SET_USER_POSTS_SUCCESS:
+      const postsByUserMapClone = new Map(Array.from(state.postsByUserMap));
+      postsByUserMapClone.set(action.userId, action.userPosts);
+
       return {
         ...state,
-        userPosts: action.userPosts,
+        postsByUserMap: postsByUserMapClone,
       };
     case actionTypes.SET_USERS_SUCCESS:
       return {

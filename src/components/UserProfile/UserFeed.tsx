@@ -23,7 +23,7 @@ interface UserFeedOwnProps {
 
 interface UserFeedProps extends UserFeedOwnProps {
   user: NullableUser;
-  userPosts: RatifiedPostBody[];
+  postsByUserMap: Map<string, RatifiedPostBody[]>;
   loadSomeUserPosts: (userId: string) => void;
 }
 
@@ -35,12 +35,14 @@ class UserFeed extends React.Component<UserFeedProps> {
   }
 
   render() {
-    const { user, userPosts } = this.props;
-
+    const { user, postsByUserMap } = this.props;
+    
     if (user === null) {
       return (<Redirect to={{pathname: '/sign-in'}}/>);
     }
 
+    const userPosts = postsByUserMap.get(this.props.userId) || [];
+    
     return (
       <div>
         {userPosts.map((post, index) => <FeedPost key={post.id} post={post} />)}
@@ -63,7 +65,7 @@ class UserFeed extends React.Component<UserFeedProps> {
 const mapStateToProps = (state: State) => {
   return {
     user: state.user,
-    userPosts: state.userPosts
+    postsByUserMap: state.postsByUserMap
   };
 };
 
